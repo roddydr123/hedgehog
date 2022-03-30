@@ -7,9 +7,9 @@ from weightsSquare import d_across_pinbase, baseEdges, blockHeight
 
 def getPinLocs():
 
-    # create the arrays based on square pinbases
-    pinLocArrX = np.arange(baseEdges * -1/2, baseEdges/2, d_across_pinbase) * 10
-    pinLocArrY = np.arange(baseEdges * -1/2, baseEdges/2, d_across_pinbase) * 10
+    # create the arrays based on square pinbases, this makes them centred on the origin
+    pinLocArrX = (np.arange(baseEdges * -1/2, baseEdges/2, d_across_pinbase) * 10 ) + baseEdges
+    pinLocArrY = (np.arange(baseEdges * -1/2, baseEdges/2, d_across_pinbase) * 10 ) + baseEdges
 
     return pinLocArrX, pinLocArrY
 
@@ -20,7 +20,7 @@ def main():
     pinData = optimizer(sys.argv[1])
 
     # create the world
-    ws   = pyg4ometry.geant4.solid.Box("ws",5e6,5e6,5e6,reg)
+    ws   = pyg4ometry.geant4.solid.Box("ws",5e3,5e3,5e3,reg)
     wl   = pyg4ometry.geant4.LogicalVolume(ws,"G4_Galactic","wl",reg)
     reg.setWorld(wl.name)
 
@@ -33,7 +33,7 @@ def main():
 
     b1   = pyg4ometry.geant4.solid.Box("b1",baseEdges,baseEdges,baseThickness,reg, lunit="cm")
     b1_l = pyg4ometry.geant4.LogicalVolume(b1,"G4_Fe","b1_l",reg, lunit="cm")
-    b1_p = pyg4ometry.geant4.PhysicalVolume([0,0,0],[0,0,0],b1_l,"b1_p",wl,reg)
+    b1_p = pyg4ometry.geant4.PhysicalVolume([0,0,0],[0,0,-(baseThickness/2) * 10],b1_l,"b1_p",wl,reg)
 
     # make the water box
     water_thickness = 10
@@ -61,8 +61,8 @@ def main():
 
             for q in range(len(pinData['edges']) - 1):
                 # make each pin block and put it in position
-                z_shift = (baseThickness / 2 + (q * height) + (height/2)) * 10
-                width = pinData['edges'][q]
+                z_shift = (height / 2 + (height * q)) * 10
+                width = pinData['edges'][q + 1]
 
                 b2   = pyg4ometry.geant4.solid.Box(f"b2-{x}-{y}-{q}",width,width,height,reg, lunit="cm")
                 b2_l = pyg4ometry.geant4.LogicalVolume(b2,"G4_Fe",f"b2_l-{x}-{y}-{q}",reg, lunit="cm")

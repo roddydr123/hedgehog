@@ -10,7 +10,7 @@ def getSimData():
     doses = []
     peaks = []
     # load in all the data and store the SOBP
-    for i in range(1, 18):
+    for i in range(1, 22):
         number = format(i, "02")
         data = np.genfromtxt(f'matrix/data{number}a.txt', skip_header=1)
         dose = data[:,2]
@@ -26,7 +26,7 @@ def getSimData():
 
     # these are the thicknesses of pmma I simulated
     # the depth needs to have -1 because the water starts at z=1cm
-    thicknesses = [0.05, 0.13, 0.2, 0.27, 0.3, 0.33, 0.4, 0.47, 0.53, 0.6, 0.67, 0.73, 0.8, 0.87, 0.93, 1, 1.1]
+    thicknesses = [0.05, 0.13, 0.2, 0.27, 0.3, 0.33, 0.4, 0.47, 0.53, 0.6, 0.67, 0.73, 0.8, 0.87, 0.93, 1, 1.1, 1.2, 1.3, 1.4, 1.5]
 
     simDataDict = {"thicknesses": thicknesses, "depth": depth, "doses": doses, "peaks": peaks}
 
@@ -44,11 +44,14 @@ def genInitGuess(peaks=None, thicknesses=None):
     # finding the base thickness as the thickness which will
     # results in a peak at the range point
     peak_interp = interpolate.UnivariateSpline(peaks[::-1], thicknesses[::-1], s=0)
-    base_thickness = peak_interp(desired[0])
+    base_thickness = peak_interp(desired[0]) - 0.3
+
+    extra_weights = [0.0] * 20
+    weights = np.insert(weights, -1, extra_weights)
 
     # find the thicknesses from the heights
     thicknesses = np.zeros_like(weights)
-    for i, thickness in enumerate(thicknesses):
+    for i in range(len(thicknesses)):
         # bottom -> top as we build the pins
         # add the base thickness
         thicknesses[i] = (i * height) + base_thickness
@@ -97,7 +100,7 @@ def genSOBP(thicknesses, weights, sDDict, show=0, desired=None, filename=None):
 
     # set the first edge equal to the second one as the base is taken care
     # of separately
-    edges[0] = edges[1]
+    #edges[0] = edges[1]
 
     if show:
         # print SOBP data
@@ -178,7 +181,7 @@ def objectiveFunc(weights, thicknesses, desired, sDDict):
     target_stdev = np.std(target_dose)
 
     # new opt-weights
-    usrWeights = [300, 15, 1]
+    usrWeights = [300, 15E2, 15E2]
     optWeights = np.array([usrWeights[0] / 0.02, usrWeights[1] / len(ent_dose), usrWeights[2] / len(exit_dose)])
 
     # finally calculate the objective function value
