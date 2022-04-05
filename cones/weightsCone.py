@@ -6,17 +6,21 @@ rho = 1             # density of absorbing medium, 1 for water
 D0 = 1              # desired height of SOBP
 p = 1.8
 alpha = 1.9E-3
-SOBPwidth = 0.7     # set the desired SOBP width in cm
+SOBPwidth = 0.6     # set the desired SOBP width in cm
 db = 4.0              # desired depth of distal edge in water
-steps = 10           # desired no. blocks/weights
+steps = 8           # desired no. blocks/weights
 waterEquiv = 1.158  # water equivalent thickness for PMMA
 d_across_pinbase = 0.1  # set the short diameter of the pinbase hexagons
-baseEdges = 0.5         # x and y size of the base you want to tile
+baseEdges = 0.7         # x and y size of the base you want to tile
 
 
 a = alpha**(1 / p)  # simplifying equation
 da = db - SOBPwidth
 Delta = SOBPwidth / steps
+
+
+def baseQuad(x):
+    return x**2
 
 
 def blockSpecs(steps=steps):
@@ -47,7 +51,7 @@ def calcWeights(steps=steps):
 
 
 def blockHeight(steps=steps):
-    return SOBPwidth / (steps )
+    return SOBPwidth / steps
 
 
 def wToRadii(weights):
@@ -66,7 +70,5 @@ def wToRadii(weights):
         As[index] = A
 
     radii = np.sqrt(As / np.pi)
-
-    # remember the base is hexagonal so the first value is not true
 
     return radii

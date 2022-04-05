@@ -2,7 +2,7 @@ import pyg4ometry
 import numpy as np
 import sys
 from cubic import optimizer
-from weightsCone import d_across_pinbase, baseEdges
+from weightsCone import d_across_pinbase, baseEdges, baseQuad
 
 
 def getPinLocs():
@@ -15,16 +15,20 @@ def getPinLocs():
     return pinLocArrX, pinLocArrY
 
 
-def main():
-    reg  = pyg4ometry.geant4.Registry()
+def build(file=None):
+
+    if not file:
+        file = sys.argv[1]
+
+    reg = pyg4ometry.geant4.Registry()
 
     pinData = optimizer(sys.argv[1])
     radii = pinData["radii"]
     thicknesses = pinData["thicknesses"]
 
     # create the world
-    ws   = pyg4ometry.geant4.solid.Box("ws",5e6,5e6,5e6,reg)
-    wl   = pyg4ometry.geant4.LogicalVolume(ws,"G4_Galactic","wl",reg)
+    ws = pyg4ometry.geant4.solid.Box("ws",5e6,5e6,5e6,reg)
+    wl = pyg4ometry.geant4.LogicalVolume(ws,"G4_Galactic","wl",reg)
     reg.setWorld(wl.name)
 
     # remove radii larger than small diagonal of hexagon
@@ -80,9 +84,13 @@ def main():
 
             count = count + 1
 
-            b2   = pyg4ometry.geant4.solid.Polycone(f"cone_s-{i}-{j}",0,2 * np.pi,thicknesses,rot,radii,reg, lunit="cm")
+            # shift pin up by correct amount
+            BshiftX = baseQuad((x + d_across_pinbase/2) / 10)
+            shift_thick = thicknesses #+ BshiftX
+
+            b2 = pyg4ometry.geant4.solid.Polycone(f"cone_s-{i}-{j}",0,2 * np.pi,shift_thick,rot,radii,reg, lunit="cm")
             b2_l = pyg4ometry.geant4.LogicalVolume(b2,"G4_Fe",f"cone_l-{i}-{j}",reg, lunit="cm")
-            b2_p = pyg4ometry.geant4.PhysicalVolume([0,0,0],[x,y,0],b2_l,f"cone_p-{i}-{j}",wl,reg)
+            b2_p = pyg4ometry.geant4.PhysicalVolume([0,0,0],[x,y,BshiftX],b2_l,f"cone_p-{i}-{j}",wl,reg)
 
             print(f"pin #{count}/{no_pins} done! x: {x}, y: {y}")
 
@@ -90,8 +98,8 @@ def main():
     print("writing...")
     writer = pyg4ometry.gdml.Writer()
     writer.addDetector(reg)
-    writer.write(f"files/{sys.argv[1]}.gdml")
+    writer.write(f"files/{file}.gdml")
     print("done")
 
 if __name__=="__main__":
-    main()
+    build()
