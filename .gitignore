@@ -1,0 +1,10 @@
+# dont track these folders
+squares/
+__pycache__/
+
+
+# or these filetypes
+.inp
+.gdml
+.npz
+.txt
