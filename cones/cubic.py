@@ -34,13 +34,13 @@ def getSimData():
     return simDataDict
 
 
-def genInitGuess(peaks=None, thicknesses=None):
+def genInitGuess(SOBPwidth, range, steps, d_across_pinbase, peaks=None, thicknesses=None):
     """
     Finds an initial guess stepped hedgehog in terms of 
     the thickness vs weight of PMMA using weightsCone.py.
     """
 
-    height, weights, desired = wc.blockSpecs()
+    height, weights, desired = wc.blockSpecs(SOBPwidth, range, steps, d_across_pinbase)
 
     # finding the base thickness as the thickness which will
     # results in a peak at the range point
@@ -56,7 +56,7 @@ def genInitGuess(peaks=None, thicknesses=None):
 
     # find the thicknesses from the heights
     thicknesses = np.zeros_like(weights)
-    for i in range(len(thicknesses)):
+    for i, thick in enumerate(thicknesses):
         # bottom -> top as we build the pins
         # add the base thickness
         thicknesses[i] = (i * height) + base_thickness
@@ -64,7 +64,7 @@ def genInitGuess(peaks=None, thicknesses=None):
     return thicknesses, weights, desired
 
 
-def genSOBP(thicknesses, weights, sDDict, show=0, desired=None, filename=None):
+def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0, desired=None, filename=None):
     """
     Takes a thickness profile and generates an SOBP from it
     using the interpolated matrix.
@@ -85,7 +85,7 @@ def genSOBP(thicknesses, weights, sDDict, show=0, desired=None, filename=None):
 
     # calculate radii from the full pin profile and return it for
     # building the pins in gdml
-    radii = wc.wToRadii(dense_weights)
+    radii = wc.wToRadii(dense_weights, d_across_pinbase)
 
     # trim small radii
     slice = radii > 0.002
@@ -150,14 +150,14 @@ def genSOBP(thicknesses, weights, sDDict, show=0, desired=None, filename=None):
     return depth_dose_sobp, pinData
 
 
-def objectiveFunc(weights, thicknesses, desired, sDDict):
+def objectiveFunc(weights, thicknesses, desired, sDDict, d_across_pinbase):
 
     range = desired[0]
     plat_width = desired[1]
 
     # get the sobp for this thickness profile and
     # partition it into entrance, target and exit regions
-    depth_dose_sobp, pinData = genSOBP(thicknesses, weights, sDDict, desired=desired)
+    depth_dose_sobp, pinData = genSOBP(thicknesses, weights, sDDict, d_across_pinbase, desired=desired)
     # the slices are truth arrays
     ent_region_slice = depth_dose_sobp[0] < (range - plat_width)
     exit_region_slice = depth_dose_sobp[0] > range
@@ -185,7 +185,7 @@ def objectiveFunc(weights, thicknesses, desired, sDDict):
     return scalar
 
 
-def optimizer(filename=None):
+def optimizer(SOBPwidth, range, steps, d_across_pinbase, tolerance, filename=None, show=1):
     """
     Calls the optimization function - objectiveFunc().
     Returns the best pin thickness profile found.
@@ -194,26 +194,23 @@ def optimizer(filename=None):
     sDDict = getSimData()
     # get the details of the initial guess stepped hedgehog
     # and the weights of the SOBPs
-    init_thicknesses, init_weights, desired = genInitGuess(peaks=sDDict["peaks"], thicknesses=sDDict["thicknesses"])
+    init_thicknesses, init_weights, desired = genInitGuess(SOBPwidth, range, steps, d_across_pinbase,
+                                                           peaks=sDDict["peaks"], thicknesses=sDDict["thicknesses"])
 
     x0 = init_weights
-    args = (init_thicknesses, desired, sDDict)
+    args = (init_thicknesses, desired, sDDict, d_across_pinbase)
 
     bounds = [(0, 1)] * len(init_weights)
 
     options = {"maxiter": 1000}
 
-    res = opt.minimize(objectiveFunc, x0, args=args, bounds=bounds, method="SLSQP", tol=1E-3, options=options)
+    res = opt.minimize(objectiveFunc, x0, args=args, bounds=bounds, method="SLSQP", tol=tolerance, options=options)
     print(res)
     opt_weights = res.x
-    depth_dose_sobp, pinData = genSOBP(init_thicknesses, opt_weights, sDDict, show=1, desired=desired, filename=filename)
+    depth_dose_sobp, pinData = genSOBP(init_thicknesses, opt_weights, sDDict, d_across_pinbase, show=show, desired=desired, filename=filename)
 
     return pinData
 
 
-def main():
-    optimizer()
-
-
 if __name__ == "__main__":
-    main()
+    optimizer()

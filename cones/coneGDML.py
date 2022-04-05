@@ -2,10 +2,13 @@ import pyg4ometry
 import numpy as np
 import sys
 from cubic import optimizer
-from weightsCone import d_across_pinbase, baseEdges, baseQuad
 
 
-def getPinLocs():
+def baseQuad(x):
+    return x**2
+
+
+def getPinLocs(d_across_pinbase, baseEdges):
     q = 3 * d_across_pinbase / np.sqrt(3)
 
     # create the arrays based on hexagonal pinbases
@@ -15,14 +18,16 @@ def getPinLocs():
     return pinLocArrX, pinLocArrY
 
 
-def build(file=None):
+def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps, tolerance, pinData=None):
 
-    if not file:
-        file = sys.argv[1]
+    if not filename:
+        filename = sys.argv[1]
 
     reg = pyg4ometry.geant4.Registry()
 
-    pinData = optimizer(sys.argv[1])
+    if not pinData:
+        pinData = optimizer(SOBPwidth, range, steps, d_across_pinbase, tolerance, filename, show=1)
+
     radii = pinData["radii"]
     thicknesses = pinData["thicknesses"]
 
@@ -61,7 +66,7 @@ def build(file=None):
     rot = np.zeros_like(pinData["radii"])
 
     # fetch the pin locations
-    pinLocArrX, pinLocArrY = getPinLocs()
+    pinLocArrX, pinLocArrY = getPinLocs(d_across_pinbase, baseEdges)
 
     # to mark the progress
     no_pins = int(len(pinLocArrX) * len(pinLocArrY))
@@ -98,7 +103,7 @@ def build(file=None):
     print("writing...")
     writer = pyg4ometry.gdml.Writer()
     writer.addDetector(reg)
-    writer.write(f"files/{file}.gdml")
+    writer.write(f"files/{filename}.gdml")
     print("done")
 
 if __name__=="__main__":
