@@ -90,7 +90,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps, tolera
             count = count + 1
 
             # shift pin up by correct amount
-            BshiftX = baseQuad((x + d_across_pinbase/2) / 10)
+            BshiftX = 0#baseQuad((x + d_across_pinbase/2) / 10)
             shift_thick = thicknesses #+ BshiftX
 
             b2 = pyg4ometry.geant4.solid.Polycone(f"cone_s-{i}-{j}",0,2 * np.pi,shift_thick,rot,radii,reg, lunit="cm")
