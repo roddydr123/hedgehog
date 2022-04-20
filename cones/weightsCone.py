@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def blockSpecs(SOBPwidth, range, steps, d_across_pinbase):
+def blockSpecs(SOBPwidth, range, steps):
     weights = calcWeights(steps, SOBPwidth, range)
     height = blockHeight(steps, SOBPwidth)
     desired = [range, SOBPwidth]

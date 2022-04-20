@@ -18,14 +18,15 @@ def convert(file=None):
 
     # correctly assign materials
     for key in freg.regionDict:
+        region = freg.regionDict[key]
         if key == "R0000":
-            freg.assignma("AIR", freg.regionDict[key])
+            freg.assignma("AIR", region)
         elif key == "BLKHOLE":
-            freg.assignma("BLCKHOLE", freg.regionDict[key])
+            freg.assignma("BLCKHOLE", region)
         elif key == "R0003":
-            freg.assignma("WATER", freg.regionDict[key])
+            freg.assignma("WATER", region)
         else:
-            freg.assignma("PMMA", freg.regionDict[key])
+            freg.assignma("PMMA", region)
 
     print("writing...")
     w = pyg4ometry.fluka.Writer()

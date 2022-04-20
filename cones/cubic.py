@@ -15,8 +15,8 @@ def getSimData():
     for i in range(1, 22):
         number = format(i, "02")
         data = np.genfromtxt(f'matrix/data{number}a.txt', skip_header=1)
-        dose = data[:,2]
-        depth = data[:,0] - 1
+        dose = data[:, 2]
+        depth = data[:, 0] - 1
         doses.append(dose)
         # store the depth of each peak
         peaks.append(depth[dose.argmax()])
@@ -27,24 +27,28 @@ def getSimData():
 
     # these are the thicknesses of pmma I simulated
     # the depth needs to have -1 because the water starts at z=1cm
-    thicknesses = [0.05, 0.13, 0.2, 0.27, 0.3, 0.33, 0.4, 0.47, 0.53, 0.6, 0.67, 0.73, 0.8, 0.87, 0.93, 1, 1.1, 1.2,1.3,1.4,1.5]
+    thicknesses = [0.05, 0.13, 0.2, 0.27, 0.3, 0.33, 0.4, 0.47, 0.53, 0.6,
+                   0.67, 0.73, 0.8, 0.87, 0.93, 1, 1.1, 1.2, 1.3, 1.4, 1.5]
 
-    simDataDict = {"thicknesses": thicknesses, "depth": depth, "doses": doses, "peaks": peaks}
+    simDataDict = {"thicknesses": thicknesses, "depth": depth, "doses": doses,
+                   "peaks": peaks}
 
     return simDataDict
 
 
-def genInitGuess(SOBPwidth, range, steps, d_across_pinbase, peaks=None, thicknesses=None):
+def genInitGuess(SOBPwidth, range, steps, d_across_pinbase, peaks=None,
+                 thicknesses=None):
     """
-    Finds an initial guess stepped hedgehog in terms of 
+    Finds an initial guess stepped hedgehog in terms of
     the thickness vs weight of PMMA using weightsCone.py.
     """
 
-    height, weights, desired = wc.blockSpecs(SOBPwidth, range, steps, d_across_pinbase)
+    height, weights, desired = wc.blockSpecs(SOBPwidth, range, steps)
 
     # finding the base thickness as the thickness which will
     # results in a peak at the range point
-    peak_interp = interpolate.UnivariateSpline(peaks[::-1], thicknesses[::-1], s=0)
+    peak_interp = interpolate.UnivariateSpline(peaks[::-1],
+                                               thicknesses[::-1], s=0)
     base_thickness = peak_interp(desired[0])
 
     # add zero weight thicknesses either end of the pin for opt to play with
@@ -64,7 +68,8 @@ def genInitGuess(SOBPwidth, range, steps, d_across_pinbase, peaks=None, thicknes
     return thicknesses, weights, desired
 
 
-def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0, desired=None, filename=None):
+def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
+            desired=None, filename=None):
     """
     Takes a thickness profile and generates an SOBP from it
     using the interpolated matrix.
@@ -79,8 +84,11 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0, desired=None
     dense_weights = np.where(dense_weights > 0, dense_weights, 0)
 
     # now find the depth-dose profile (BP) for each thickness by interpolation
-    # we don't interpolate along the depth-dose profile at the moment, could change that
-    interp_dose = interpolate.RectBivariateSpline(sDDict["thicknesses"], sDDict["depth"], sDDict["doses"], s=0)
+    # we don't interpolate along the depth-dose profile at the moment, could
+    # change that
+    interp_dose = interpolate.RectBivariateSpline(sDDict["thicknesses"],
+                                                  sDDict["depth"],
+                                                  sDDict["doses"], s=0)
     dense_doses = interp_dose(dense_thicknesses, sDDict["depth"])
 
     # calculate radii from the full pin profile and return it for
@@ -157,11 +165,14 @@ def objectiveFunc(weights, thicknesses, desired, sDDict, d_across_pinbase):
 
     # get the sobp for this thickness profile and
     # partition it into entrance, target and exit regions
-    depth_dose_sobp, pinData = genSOBP(thicknesses, weights, sDDict, d_across_pinbase, desired=desired)
+    depth_dose_sobp, pinData = \
+        genSOBP(thicknesses, weights, sDDict, d_across_pinbase,
+                desired=desired)
     # the slices are truth arrays
     ent_region_slice = depth_dose_sobp[0] < (range - plat_width)
     exit_region_slice = depth_dose_sobp[0] > range
-    target_region_slice = (depth_dose_sobp[0] <= range) & (depth_dose_sobp[0] >= range - plat_width)
+    target_region_slice = (depth_dose_sobp[0] <= range) &\
+                          (depth_dose_sobp[0] >= range - plat_width)
     ent_dose = depth_dose_sobp[1][ent_region_slice]
     exit_dose = depth_dose_sobp[1][exit_region_slice]
     target_dose = depth_dose_sobp[1][target_region_slice]
@@ -175,17 +186,21 @@ def objectiveFunc(weights, thicknesses, desired, sDDict, d_across_pinbase):
 
     # new opt-weights
     usrWeights = [400, 15E2, 15E2]
-    optWeights = np.array([usrWeights[0] / 0.02, usrWeights[1] / len(ent_dose), usrWeights[2] / len(exit_dose)])
+    optWeights = np.array([usrWeights[0] / 0.02, usrWeights[1] / len(ent_dose),
+                          usrWeights[2] / len(exit_dose)])
 
     # finally calculate the objective function value
-    scalar = (optWeights[0] * target_stdev) + (optWeights[1] * ent_sum) + (optWeights[2] * exit_sum)
+    scalar = (optWeights[0] * target_stdev) + (optWeights[1] * ent_sum) +\
+             (optWeights[2] * exit_sum)
 
-    print(scalar, f"{np.round((target_stdev * 100) / np.average(target_dose), 3)}%")
+    print(scalar,
+          f"{np.round((target_stdev * 100) / np.average(target_dose),3)}%")
 
     return scalar
 
 
-def optimizer(SOBPwidth, range, steps, d_across_pinbase, tolerance, filename=None, show=1):
+def optimizer(SOBPwidth, range, steps, d_across_pinbase, tolerance,
+              filename=None, show=1):
     """
     Calls the optimization function - objectiveFunc().
     Returns the best pin thickness profile found.
@@ -194,8 +209,9 @@ def optimizer(SOBPwidth, range, steps, d_across_pinbase, tolerance, filename=Non
     sDDict = getSimData()
     # get the details of the initial guess stepped hedgehog
     # and the weights of the SOBPs
-    init_thicknesses, init_weights, desired = genInitGuess(SOBPwidth, range, steps, d_across_pinbase,
-                                                           peaks=sDDict["peaks"], thicknesses=sDDict["thicknesses"])
+    init_thicknesses, init_weights, desired = \
+        genInitGuess(SOBPwidth, range, steps, d_across_pinbase,
+                     peaks=sDDict["peaks"], thicknesses=sDDict["thicknesses"])
 
     x0 = init_weights
     args = (init_thicknesses, desired, sDDict, d_across_pinbase)
@@ -204,10 +220,13 @@ def optimizer(SOBPwidth, range, steps, d_across_pinbase, tolerance, filename=Non
 
     options = {"maxiter": 1000}
 
-    res = opt.minimize(objectiveFunc, x0, args=args, bounds=bounds, method="SLSQP", tol=tolerance, options=options)
+    res = opt.minimize(objectiveFunc, x0, args=args, bounds=bounds,
+                       method="SLSQP", tol=tolerance, options=options)
     print(res)
     opt_weights = res.x
-    depth_dose_sobp, pinData = genSOBP(init_thicknesses, opt_weights, sDDict, d_across_pinbase, show=show, desired=desired, filename=filename)
+    depth_dose_sobp, pinData = genSOBP(init_thicknesses, opt_weights, sDDict,
+                                       d_across_pinbase, show=show,
+                                       desired=desired, filename=filename)
 
     return pinData
 

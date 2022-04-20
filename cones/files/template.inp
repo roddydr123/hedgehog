@@ -12,11 +12,12 @@ LOW-NEUT        260.
 DCYTIMES        180.      900.     3600.    60000.   600000.       0.0
 FIXED
 USRBIN           10.      DOSE      -21.       7.5       7.5        7.bigdosez
-USRBIN          -7.5      -7.5        1.        1.        1.     1200. &
-USRBIN           10.      DOSE      -21.      0.25      0.25        7.thindosZ
-USRBIN         -0.25     -0.25        1.        1.        1.     1200. &
-USRBIN           10.      DOSE      -21.       0.2       0.2        6.thindos1
-USRBIN          -0.2      -0.2        1.      100.      100.     1200. &
+USRBIN          -7.5      -7.5        2.        1.        1.     1200. &
+USRBIN           10.      DOSE      -21.       0.6       0.6        7.thindosZ
+USRBIN          -0.6      -0.6        2.        5.        5.     1200. &
+USRBIN           10.      DOSE      -21.       0.5       0.5        7.thindos1
+USRBIN          -0.5      -0.5        2.        5.        5.     1200. &
 RANDOMIZ          1.   123126.
 START          1000.
+STOP
 STOP
