@@ -28,16 +28,16 @@ def writeVtkPolyDataAsSTLFile(fileName, meshes):
     return stlWriter
 
 
-def convert():
+def convert(filename=None):
     """
     Converts a geometry from GDML format to STL format.
     """
 
-    filepath = '/mnt/c/Users/david/documents/triumf/projects/3drm-design/cad/2nd try'
-    filename = sys.argv[1]
+    if not filename:
+        filename = sys.argv[1]
 
     print("reading...")
-    r = pyg4ometry.gdml.Reader(f'{filepath}/gdmls/{filename}.gdml')
+    r = pyg4ometry.gdml.Reader(f'files/{filename}.gdml')
     reg = r.getRegistry()
 
     meshes = []
@@ -63,7 +63,7 @@ def convert():
             meshes.append(vtkPD)
 
     print("writing...")
-    w = writeVtkPolyDataAsSTLFile(f'{filepath}/stls/{filename}.stl', meshes)
+    writeVtkPolyDataAsSTLFile(f'files/{filename}.stl', meshes)
 
 
 if __name__ == "__main__":

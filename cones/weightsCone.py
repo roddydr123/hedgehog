@@ -1,37 +1,27 @@
 import numpy as np
 
 
-"""Choose the parameters for the SOBP"""
-rho = 1             # density of absorbing medium, 1 for water
-D0 = 1              # desired height of SOBP
-p = 1.8
-alpha = 1.9E-3
-SOBPwidth = 0.7     # set the desired SOBP width in cm
-db = 4.0              # desired depth of distal edge in water
-steps = 10           # desired no. blocks/weights
-waterEquiv = 1.158  # water equivalent thickness for PMMA
-d_across_pinbase = 0.1  # set the short diameter of the pinbase hexagons
-baseEdges = 0.5         # x and y size of the base you want to tile
-
-
-a = alpha**(1 / p)  # simplifying equation
-da = db - SOBPwidth
-Delta = SOBPwidth / steps
-
-
-def blockSpecs(steps=steps):
-    weights = calcWeights(steps=steps)
-    height = blockHeight(steps=steps)
-    desired = [db, SOBPwidth]
+def blockSpecs(SOBPwidth, range, steps):
+    weights = calcWeights(steps, SOBPwidth, range)
+    height = blockHeight(steps, SOBPwidth)
+    desired = [range, SOBPwidth]
 
     return height, weights, desired
 
 
-def calcWeights(steps=steps):
+def calcWeights(steps, SOBPwidth, db):
     """
     Uses Bortfeld 1996 method to calculate the weights of the
     pristine BPs composing the desired SOBP.
     """
+    rho = 1             # density of absorbing medium, 1 for water
+    D0 = 1              # desired height of SOBP
+    p = 1.8
+    alpha = 1.9E-3
+
+    a = alpha**(1 / p)  # simplifying equation
+    Delta = SOBPwidth / steps
+
     Wr = rho * D0 * (p**2 * a * np.sin(np.pi / p) / np.pi * (p - 1))
     WrPrim = Wr * (Delta / 2)**(1 - (1 / p))
     weights = [WrPrim]
@@ -46,11 +36,11 @@ def calcWeights(steps=steps):
     return norm
 
 
-def blockHeight(steps=steps):
-    return SOBPwidth / (steps )
+def blockHeight(steps, SOBPwidth):
+    return SOBPwidth / steps
 
 
-def wToRadii(weights):
+def wToRadii(weights, d_across_pinbase):
 
     A_pinbase = np.sqrt(3) * d_across_pinbase**2 / 2
 
@@ -66,7 +56,5 @@ def wToRadii(weights):
         As[index] = A
 
     radii = np.sqrt(As / np.pi)
-
-    # remember the base is hexagonal so the first value is not true
 
     return radii

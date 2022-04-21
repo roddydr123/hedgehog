@@ -12,15 +12,15 @@ def main():
     depth_dose_sobp = np.load(f'data/{target_file}-gen.npz')["depth_dose_sobp"]
 
     # normalise the sobps
-    depth_dose_sobp[1] = depth_dose_sobp[1] / depth_dose_sobp[1].max()
-    sim_sobp[1] = sim_sobp[1] / sim_sobp[1].max()
+    depth_dose_sobp[1] /= depth_dose_sobp[1].max()
+    sim_sobp[1] /= sim_sobp[1].max()
 
     # move the fluka sobp by 1
-    sim_sobp[0] = sim_sobp[0] - 1
+    sim_sobp[0] -= 1
 
     fig, ax = plt.subplots()
-    ax.scatter(depth_dose_sobp[0], depth_dose_sobp[1], s=1, label="optimized")
-    ax.scatter(sim_sobp[0], sim_sobp[1], s=1, label="FLUKA")
+    ax.plot(depth_dose_sobp[0], depth_dose_sobp[1], label="optimized")
+    ax.plot(sim_sobp[0], sim_sobp[1], label="FLUKA")
     ax.legend()
     ax.set_xlabel("Depth (cm)")
     ax.set_ylabel("Normalised dose")

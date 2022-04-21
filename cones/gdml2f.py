@@ -3,12 +3,14 @@ import sys
 import re
 
 
-def convert():
+def convert(file=None):
+
+    if not file:
+        file = sys.argv[1]
     print("opening file...")
-    filename = f'files/{sys.argv[1]}'
-    reader = pyg4ometry.gdml.Reader(f"{filename}.gdml")
+
+    reader = pyg4ometry.gdml.Reader(f"files/{file}.gdml")
     logical = reader.getRegistry().getWorldVolume()
-    print("done")
 
     # do the conversion to fluka geometry
     print("converting...")
@@ -16,30 +18,31 @@ def convert():
 
     # correctly assign materials
     for key in freg.regionDict:
+        region = freg.regionDict[key]
         if key == "R0000":
-            freg.assignma("AIR", freg.regionDict[key])
+            freg.assignma("AIR", region)
         elif key == "BLKHOLE":
-            freg.assignma("BLCKHOLE", freg.regionDict[key])
+            freg.assignma("BLCKHOLE", region)
         elif key == "R0003":
-            freg.assignma("WATER", freg.regionDict[key])
+            freg.assignma("WATER", region)
         else:
-            freg.assignma("PMMA", freg.regionDict[key])
+            freg.assignma("PMMA", region)
 
     print("writing...")
     w = pyg4ometry.fluka.Writer()
     w.addDetector(freg)
-    w.write(f"{filename}.inp")
+    w.write(f"files/{file}.inp")
     print("adding to template...")
-    addToTemplate(filename)
+    addToTemplate(file)
     print("complete!")
 
 
 def addToTemplate(filename):
     # merge the generated geometry with a template file
-    with open(f"{filename}geo.inp", "w") as file:
+    with open(f"files/{filename}geo.inp", "w") as file:
         template = open("files/template.inp", "r")
         templines = template.readlines()
-        geometryfile = open(f"{filename}.inp", "r")
+        geometryfile = open(f"files/{filename}.inp", "r")
         geolines = geometryfile.readlines()[:-1]
         # split the template
         for i in range(len(templines)):
@@ -63,5 +66,6 @@ def addToTemplate(filename):
         template.close()
         geometryfile.close()
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     convert()
