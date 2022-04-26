@@ -19,7 +19,7 @@ def getPinLocs(d_across_pinbase, baseEdges):
 
 
 def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
-          tolerance, pinData=None):
+          tolerance, zsep, usrWeights, pinData=None):
 
     if not filename:
         filename = sys.argv[1]
@@ -28,7 +28,8 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
 
     if not pinData:
         pinData = optimizer(SOBPwidth, range, steps, d_across_pinbase,
-                            tolerance, filename, show=1)
+                            tolerance, zsep, usrWeights,
+                            filename=filename, show=1)
 
     radii = pinData["radii"]
     thicknesses = pinData["thicknesses"]
@@ -61,7 +62,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
 
     # make the water box
     water_thickness = 10
-    z_disp = 2 + (water_thickness / 2)
+    z_disp = zsep + (water_thickness / 2)
     wa1 = pyg4ometry.geant4.solid.Box("wa1", 50, 50, water_thickness, reg,
                                       lunit="cm")
     wa1_l = pyg4ometry.geant4.LogicalVolume(wa1, "G4_Fe", "wa1_l", reg,
@@ -82,7 +83,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     adj_pinLocArrY = pinLocArrY + (d_across_pinbase / 2)
 
     # create multiple pins along an axis
-    for i, x in enumerate(pinLocArrX * 10):
+    for i, x in enumerate(np.round(pinLocArrX, 5) * 10):
 
         if xrow % 2 == 0:
             usingArrY = pinLocArrY
@@ -91,7 +92,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
 
         xrow = xrow + 1
 
-        for j, y in enumerate(usingArrY * 10):
+        for j, y in enumerate(np.round(usingArrY, 5) * 10):
 
             count = count + 1
 
