@@ -1,0 +1,23 @@
+TITLE
+hedgehog filled template
+GLOBAL         2000.       0.0       0.0       0.0       0.0       0.0
+DEFAULTS                                                              PRECISIO
+IRRPROFI       1000.100000000.
+BEAM          -0.074 -.0021314       0.0      -1.2      -1.2          PROTON
+BEAMPOS          0.0       0.0       -1.
+RADDECAY          1.                  3.               99999
+PHYSICS           1.                                                  COALESCE
+PHYSICS           3.                                                  EVAPORAT
+LOW-NEUT        260.
+DCYTIMES        180.      900.     3600.    60000.   600000.       0.0
+FIXED
+USRBIN           10.      DOSE      -21.       7.5       7.5       20.bigdosez
+USRBIN          -7.5      -7.5       15.        1.        1.     1200. &
+USRBIN           10.      DOSE      -21.       0.6       0.6       20.thindosZ
+USRBIN          -0.6      -0.6       15.        5.        5.     1200. &
+USRBIN           10.      DOSE      -21.       0.5       0.5       20.thindos1
+USRBIN          -0.5      -0.5       15.        5.        5.     1200. &
+RANDOMIZ          1.   123126.
+START          1000.
+STOP
+STOP

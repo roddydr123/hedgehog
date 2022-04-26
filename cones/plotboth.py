@@ -6,7 +6,7 @@ import numpy as np
 def main():
     target_file = sys.argv[1]
 
-    sim_array = np.genfromtxt(f'data/{target_file}.txt', skip_header=1)
+    sim_array = np.genfromtxt(f'data/{target_file}a.txt', skip_header=1)
     sim_sobp = [sim_array[:, 0], sim_array[:, 2]]
 
     depth_dose_sobp = np.load(f'data/{target_file}-gen.npz')["depth_dose_sobp"]
@@ -16,7 +16,7 @@ def main():
     sim_sobp[1] /= sim_sobp[1].max()
 
     # move the fluka sobp by 1
-    sim_sobp[0] -= 1
+    sim_sobp[0] -= 15
 
     fig, ax = plt.subplots()
     ax.plot(depth_dose_sobp[0], depth_dose_sobp[1], label="optimized")
