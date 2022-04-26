@@ -19,7 +19,7 @@ def getPinLocs(d_across_pinbase, baseEdges):
 
 
 def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
-          tolerance, zsep, pinData=None):
+          tolerance, zsep, usrWeights, pinData=None):
 
     if not filename:
         filename = sys.argv[1]
@@ -28,7 +28,8 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
 
     if not pinData:
         pinData = optimizer(SOBPwidth, range, steps, d_across_pinbase,
-                            tolerance, zsep, filename, show=1)
+                            tolerance, zsep, usrWeights,
+                            filename=filename, show=1)
 
     radii = pinData["radii"]
     thicknesses = pinData["thicknesses"]

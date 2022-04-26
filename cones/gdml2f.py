@@ -40,8 +40,8 @@ def convert(zsep, file=None):
 def addToTemplate(filename, zsep):
 
     # choose the template based on z separation
-    if zsep == 15:
-        template = open("files/gtemplate.inp", "r")
+    if zsep == 36.5:
+        template = open("files/gtemplate36.inp", "r")
     else:
         template = open("files/template.inp", "r")
 

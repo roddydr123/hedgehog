@@ -13,32 +13,30 @@ def getSimData(zsep):
     peaks = []
 
     if zsep == 15:
-        print("using dataset 2")
-        # load in all the data and store the SOBP
-        for i in range(1, 17):
-            number = format(i, "02")
-            data = np.genfromtxt(f'matrix/long{number}.txt', skip_header=1)
-            dose = data[:, 2]
-            depth = data[:, 0] - 15
-            doses.append(dose)
-            # store the depth of each peak
-            peaks.append(depth[dose.argmax()])
-            thicknesses = [0.1, 0.19, 0.29, 0.38, 0.47, 0.57, 0.66, 0.75, 0.85,
-                           0.94, 1.03, 1.13, 1.22, 1.31, 1.41, 1.5]
+        settings = [zsep, "using dataset 2", 17, "long", [0.1, 0.19, 0.29,
+                    0.38, 0.47, 0.57, 0.66, 0.75, 0.85, 0.94, 1.03, 1.13,
+                    1.22, 1.31, 1.41, 1.5]]
+    elif zsep == 36.5:
+        settings = [zsep, "using dataset 3", 17, "expt", [0.1, 0.19, 0.29,
+                    0.38, 0.47, 0.57, 0.66, 0.75, 0.85, 0.94, 1.03, 1.13,
+                    1.22, 1.31, 1.41, 1.5]]
     else:
-        print(f"using dataset 1 with zsep = {zsep}")
-        for i in range(1, 22):
-            number = format(i, "02")
-            data = np.genfromtxt(f'matrix/data{number}a.txt', skip_header=1)
-            dose = data[:, 2]
-            depth = data[:, 0] - 1
-            doses.append(dose)
-            # store the depth of each peak
-            peaks.append(depth[dose.argmax()])
+        settings = [zsep, "using dataset 1", 22, "data", [0.05, 0.13, 0.2,
+                    0.27, 0.3, 0.33, 0.4, 0.47, 0.53, 0.6, 0.67, 0.73, 0.8,
+                    0.87, 0.93, 1, 1.1, 1.2, 1.3, 1.4, 1.5]]
 
-            thicknesses = [0.05, 0.13, 0.2, 0.27, 0.3, 0.33, 0.4, 0.47, 0.53,
-                           0.6, 0.67, 0.73, 0.8, 0.87, 0.93, 1, 1.1, 1.2,
-                           1.3, 1.4, 1.5]
+    print(settings[1])
+    # load in all the data and store the SOBP
+    for i in range(1, settings[2]):
+        number = format(i, "02")
+        data = np.genfromtxt(f'matrix/{settings[3]}{number}.txt',
+                             skip_header=1)
+        dose = data[:, 2]
+        depth = data[:, 0] - zsep
+        doses.append(dose)
+        # store the depth of each peak
+        peaks.append(depth[dose.argmax()])
+        thicknesses = settings[4]
 
     doses = np.array(doses)
 
@@ -67,7 +65,7 @@ def genInitGuess(SOBPwidth, range, steps, d_across_pinbase, peaks=None,
     base_thickness = peak_interp(desired[0])
 
     # add zero weight thicknesses either end of the pin for opt to play with
-    padding_zeros = 5
+    padding_zeros = 2
     base_thickness -= (padding_zeros * height)
     extra_weights = [0.0] * padding_zeros
     weights = np.append(weights, extra_weights)
@@ -173,7 +171,8 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
     return depth_dose_sobp, pinData
 
 
-def objectiveFunc(weights, thicknesses, desired, sDDict, d_across_pinbase):
+def objectiveFunc(weights, thicknesses, desired, sDDict, d_across_pinbase,
+                  usrWeights):
 
     range = desired[0]
     plat_width = desired[1]
@@ -200,7 +199,6 @@ def objectiveFunc(weights, thicknesses, desired, sDDict, d_across_pinbase):
     target_stdev = np.std(target_dose)
 
     # new opt-weights
-    usrWeights = [400, 15E2, 15E2]
     optWeights = np.array([usrWeights[0] / 0.02, usrWeights[1] / len(ent_dose),
                           usrWeights[2] / len(exit_dose)])
 
@@ -215,7 +213,7 @@ def objectiveFunc(weights, thicknesses, desired, sDDict, d_across_pinbase):
 
 
 def optimizer(SOBPwidth, range, steps, d_across_pinbase, tolerance, zsep,
-              filename=None, show=1):
+              usrWeights, filename=None, show=1):
     """
     Calls the optimization function - objectiveFunc().
     Returns the best pin thickness profile found.
@@ -229,7 +227,7 @@ def optimizer(SOBPwidth, range, steps, d_across_pinbase, tolerance, zsep,
                      peaks=sDDict["peaks"], thicknesses=sDDict["thicknesses"])
 
     x0 = init_weights
-    args = (init_thicknesses, desired, sDDict, d_across_pinbase)
+    args = (init_thicknesses, desired, sDDict, d_across_pinbase, usrWeights)
 
     bounds = [(0, 1)] * len(init_weights)
 
