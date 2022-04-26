@@ -3,7 +3,7 @@ import sys
 import re
 
 
-def convert(file=None):
+def convert(zsep, file=None):
 
     if not file:
         file = sys.argv[1]
@@ -33,14 +33,20 @@ def convert(file=None):
     w.addDetector(freg)
     w.write(f"files/{file}.inp")
     print("adding to template...")
-    addToTemplate(file)
+    addToTemplate(file, zsep)
     print("complete!")
 
 
-def addToTemplate(filename):
+def addToTemplate(filename, zsep):
+
+    # choose the template based on z separation
+    if zsep == 15:
+        template = open("files/gtemplate.inp", "r")
+    else:
+        template = open("files/template.inp", "r")
+
     # merge the generated geometry with a template file
     with open(f"files/{filename}geo.inp", "w") as file:
-        template = open("files/template.inp", "r")
         templines = template.readlines()
         geometryfile = open(f"files/{filename}.inp", "r")
         geolines = geometryfile.readlines()[:-1]

@@ -8,27 +8,42 @@ from SOBPwidth import getwidth
 waterEquiv = 1.158
 
 
-def getSimData():
+def getSimData(zsep):
     doses = []
     peaks = []
-    # load in all the data and store the SOBP
-    for i in range(1, 22):
-        number = format(i, "02")
-        data = np.genfromtxt(f'matrix/data{number}a.txt', skip_header=1)
-        dose = data[:, 2]
-        depth = data[:, 0] - 1
-        doses.append(dose)
-        # store the depth of each peak
-        peaks.append(depth[dose.argmax()])
+
+    if zsep == 15:
+        print("using dataset 2")
+        # load in all the data and store the SOBP
+        for i in range(1, 17):
+            number = format(i, "02")
+            data = np.genfromtxt(f'matrix/long{number}.txt', skip_header=1)
+            dose = data[:, 2]
+            depth = data[:, 0] - 15
+            doses.append(dose)
+            # store the depth of each peak
+            peaks.append(depth[dose.argmax()])
+            thicknesses = [0.1, 0.19, 0.29, 0.38, 0.47, 0.57, 0.66, 0.75, 0.85,
+                           0.94, 1.03, 1.13, 1.22, 1.31, 1.41, 1.5]
+    else:
+        print(f"using dataset 1 with zsep = {zsep}")
+        for i in range(1, 22):
+            number = format(i, "02")
+            data = np.genfromtxt(f'matrix/data{number}a.txt', skip_header=1)
+            dose = data[:, 2]
+            depth = data[:, 0] - 1
+            doses.append(dose)
+            # store the depth of each peak
+            peaks.append(depth[dose.argmax()])
+
+            thicknesses = [0.05, 0.13, 0.2, 0.27, 0.3, 0.33, 0.4, 0.47, 0.53,
+                           0.6, 0.67, 0.73, 0.8, 0.87, 0.93, 1, 1.1, 1.2,
+                           1.3, 1.4, 1.5]
+
     doses = np.array(doses)
 
     # normalise all the BPs relative to the highest peak
     doses = doses / doses.max()
-
-    # these are the thicknesses of pmma I simulated
-    # the depth needs to have -1 because the water starts at z=1cm
-    thicknesses = [0.05, 0.13, 0.2, 0.27, 0.3, 0.33, 0.4, 0.47, 0.53, 0.6,
-                   0.67, 0.73, 0.8, 0.87, 0.93, 1, 1.1, 1.2, 1.3, 1.4, 1.5]
 
     simDataDict = {"thicknesses": thicknesses, "depth": depth, "doses": doses,
                    "peaks": peaks}
@@ -199,14 +214,14 @@ def objectiveFunc(weights, thicknesses, desired, sDDict, d_across_pinbase):
     return scalar
 
 
-def optimizer(SOBPwidth, range, steps, d_across_pinbase, tolerance,
+def optimizer(SOBPwidth, range, steps, d_across_pinbase, tolerance, zsep,
               filename=None, show=1):
     """
     Calls the optimization function - objectiveFunc().
     Returns the best pin thickness profile found.
     """
 
-    sDDict = getSimData()
+    sDDict = getSimData(zsep)
     # get the details of the initial guess stepped hedgehog
     # and the weights of the SOBPs
     init_thicknesses, init_weights, desired = \
