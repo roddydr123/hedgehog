@@ -52,8 +52,8 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     # move pins down to meet the base at z=0
     thicknesses -= thicknesses[0]
 
-    b1 = pyg4ometry.geant4.solid.Box("b1", baseEdges, baseEdges, baseThickness,
-                                     reg, lunit="cm")
+    b1 = pyg4ometry.geant4.solid.Box("b1", baseEdges + 0.4, baseEdges + 0.4,
+                                     baseThickness, reg, lunit="cm")
     b1_l = pyg4ometry.geant4.LogicalVolume(b1, "G4_Fe", "b1_l", reg,
                                            lunit="cm")
     pyg4ometry.geant4.PhysicalVolume([0, 0, 0],
