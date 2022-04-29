@@ -1,11 +1,12 @@
 import pyg4ometry
 import sys
+from coneGDML import path
 
 
 def display():
 
-    filename = f'files/{sys.argv[1]}'
-    reg = pyg4ometry.geant4.Registry()
+    filename = f'{path}files/{sys.argv[1]}'
+    pyg4ometry.geant4.Registry()
 
     print("reading in...")
     r = pyg4ometry.gdml.Reader(f"{filename}.gdml")

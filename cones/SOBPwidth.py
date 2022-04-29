@@ -2,12 +2,13 @@ import numpy as np
 import sys
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
+from coneGDML import path
 
 
 def main():
     range, sobp_width = input("Give the range and the SOBP width: ").split()
     target_file = sys.argv[1]
-    array = np.genfromtxt(f'data/{target_file}.txt', skip_header=1)
+    array = np.genfromtxt(f'{path}data/{target_file}.txt', skip_header=1)
     energies = array[:, 2]
     depths = array[:, 0]
     getwidth(depths, energies, range=float(range),

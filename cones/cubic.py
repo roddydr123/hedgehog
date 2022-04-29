@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import weightsCone as wc
 from SOBPwidth import getwidth
+from coneGDML import path
 
 waterEquiv = 1.158
 
@@ -162,7 +163,7 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
         ax4.set_ylabel("Dose")
 
         if filename:
-            np.savez(f'data/{filename}-gen', depth_dose_sobp=depth_dose_sobp)
+            np.savez(f'{path}data/{filename}-gen', depth_dose_sobp=depth_dose_sobp)
 
         plt.show()
 
