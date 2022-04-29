@@ -1,17 +1,19 @@
 import numpy as np
 import sys
-#import matplotlib.pyplot as plt
-#from scipy.optimize import curve_fit
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+from coneGDML import path
 
 
 def main():
     range, sobp_width = input("Give the range and the SOBP width: ").split()
     target_file = sys.argv[1]
-    array = np.genfromtxt(f'data/{target_file}.txt', skip_header=1)
+    array = np.genfromtxt(f'{path}data/{target_file}.txt', skip_header=1)
     energies = array[:, 2]
     depths = array[:, 0]
-    getwidth(depths, energies, range=float(range), sobp_width=float(sobp_width))
-    #plotwidths()
+    getwidth(depths, energies, range=float(range),
+             sobp_width=float(sobp_width))
+    # plotwidths()
 
 
 def getwidth(depths, energies, range=None, sobp_width=None):
@@ -21,7 +23,7 @@ def getwidth(depths, energies, range=None, sobp_width=None):
     # SOBP width and maximum dE/dx value.
     print(f'SOBP width: {np.round(width * 10, 3)}mm, maximum: {peak}')
     # Entrance to peak ratio
-    print(f'Entrance/peak: {np.round(100 * np.average(energies[0:5])/peak, 1)}%')
+    print(f'Entrance/peak: {np.round(100 * np.average(energies[0:5]) / peak, 1)}%')
     # 90% to 10% width (distal falloff)
     array = np.column_stack([depths, energies])
     PastPeak = array[energies.argmax():]
@@ -32,11 +34,12 @@ def getwidth(depths, energies, range=None, sobp_width=None):
 
     if range:
         # increase range because fluka sobp starts at 1
-        range += 1
-        target_region_slice = (depths <= range) & (depths >= range - sobp_width)
+        range += 15
+        target_region_slice = (depths <= range) &\
+                              (depths >= range - sobp_width)
         target_dose = energies[target_region_slice]
         target_stdev = np.std(target_dose)
-        print(f"target region stdev: {np.round((target_stdev * 100) / np.average(target_dose), 3)}%")
+        print(f"target stdev: {np.round((target_stdev * 100) / np.average(target_dose), 3)}%")
 
 
 def plotwidths():
@@ -59,5 +62,5 @@ def exponential(x, a, b, c):
     return a * np.exp(b * x) + c
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

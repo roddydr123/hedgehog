@@ -1,6 +1,7 @@
 import pyg4ometry
 import sys
 import vtk as _vtk
+from coneGDML import path
 
 
 def writeVtkPolyDataAsSTLFile(fileName, meshes):
@@ -37,7 +38,7 @@ def convert(filename=None):
         filename = sys.argv[1]
 
     print("reading...")
-    r = pyg4ometry.gdml.Reader(f'files/{filename}.gdml')
+    r = pyg4ometry.gdml.Reader(f'{path}files/{filename}.gdml')
     reg = r.getRegistry()
 
     meshes = []
@@ -53,17 +54,34 @@ def convert(filename=None):
             lv = reg.logicalVolumeDict[kv]
             pv = reg.physicalVolumeDict[kp]
 
-            # get the logical volume mesh but the correct scale and
-            # translation from the physical volume.
-            m = lv._getPhysicalDaughterMesh(pv)
+            # set the number of slices in the mesh around the pin
+            # circumference.
+            pinSolid = lv.solid
+            pinSolid.nslice = 50
 
-            vtkPD = pyg4ometry.visualisation.Convert.pycsgMeshToVtkPolyData(m)
+            mesh = lv.solid.mesh()
+
+            # scale the pin mesh using the physical volume
+            if pv.scale:
+                s = pv.scale.eval()
+                mesh.scale(s)
+                if s[0]*s[1]*s[2] == 1:
+                    pass
+                elif s[0]*s[1]*s[2] == -1:
+                    mesh = mesh.inverse()
+
+            # translate the pin mesh to the right place
+            t = pv.position.eval()
+            mesh.translate(t)
+
+            vtkPD = pyg4ometry.visualisation.Convert.\
+                pycsgMeshToVtkPolyData(mesh)
 
             # make a list of meshes to be written up in one go.
             meshes.append(vtkPD)
 
     print("writing...")
-    writeVtkPolyDataAsSTLFile(f'files/{filename}.stl', meshes)
+    writeVtkPolyDataAsSTLFile(f'{path}files/{filename}.stl', meshes)
 
 
 if __name__ == "__main__":

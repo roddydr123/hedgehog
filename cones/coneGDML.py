@@ -4,6 +4,9 @@ import sys
 from cubic import optimizer
 
 
+path = 'C:/Users/david/Documents/TRIUMF/projects/3DRM-design/'
+
+
 def baseQuad(x):
     return x**2
 
@@ -19,7 +22,7 @@ def getPinLocs(d_across_pinbase, baseEdges):
 
 
 def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
-          tolerance, pinData=None):
+          tolerance, zsep, usrWeights, pinData=None):
 
     if not filename:
         filename = sys.argv[1]
@@ -28,7 +31,8 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
 
     if not pinData:
         pinData = optimizer(SOBPwidth, range, steps, d_across_pinbase,
-                            tolerance, filename, show=1)
+                            tolerance, zsep, usrWeights,
+                            filename=filename, show=1)
 
     radii = pinData["radii"]
     thicknesses = pinData["thicknesses"]
@@ -51,8 +55,8 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     # move pins down to meet the base at z=0
     thicknesses -= thicknesses[0]
 
-    b1 = pyg4ometry.geant4.solid.Box("b1", baseEdges, baseEdges, baseThickness,
-                                     reg, lunit="cm")
+    b1 = pyg4ometry.geant4.solid.Box("b1", baseEdges + 0.4, baseEdges + 0.4,
+                                     baseThickness, reg, lunit="cm")
     b1_l = pyg4ometry.geant4.LogicalVolume(b1, "G4_Fe", "b1_l", reg,
                                            lunit="cm")
     pyg4ometry.geant4.PhysicalVolume([0, 0, 0],
@@ -61,7 +65,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
 
     # make the water box
     water_thickness = 10
-    z_disp = 2 + (water_thickness / 2)
+    z_disp = zsep + (water_thickness / 2)
     wa1 = pyg4ometry.geant4.solid.Box("wa1", 50, 50, water_thickness, reg,
                                       lunit="cm")
     wa1_l = pyg4ometry.geant4.LogicalVolume(wa1, "G4_Fe", "wa1_l", reg,
@@ -82,7 +86,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     adj_pinLocArrY = pinLocArrY + (d_across_pinbase / 2)
 
     # create multiple pins along an axis
-    for i, x in enumerate(pinLocArrX * 10):
+    for i, x in enumerate(np.round(pinLocArrX, 5) * 10):
 
         if xrow % 2 == 0:
             usingArrY = pinLocArrY
@@ -91,7 +95,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
 
         xrow = xrow + 1
 
-        for j, y in enumerate(usingArrY * 10):
+        for j, y in enumerate(np.round(usingArrY, 5) * 10):
 
             count = count + 1
 
@@ -111,13 +115,13 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
             # b2_p = pyg4ometry.geant4.PhysicalVolume([np.pi,0,0],
             # [x,y,BshiftX],b2_l,f"cone_p-{i}-{j}",wl,reg)
 
-            print(f"pin #{count}/{no_pins} done! x: {x}, y: {y}")
+            print(f"pin #{count}/{no_pins} x: {x}, y: {y}")
 
     # write to gdml
     print("writing...")
     writer = pyg4ometry.gdml.Writer()
     writer.addDetector(reg)
-    writer.write(f"files/{filename}.gdml")
+    writer.write(f"{path}files/{filename}.gdml")
     print("done")
 
 
