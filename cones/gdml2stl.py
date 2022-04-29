@@ -1,7 +1,7 @@
 import pyg4ometry
 import sys
 import vtk as _vtk
-from coneGDML import path
+from weightsCone import path
 
 
 def writeVtkPolyDataAsSTLFile(fileName, meshes):

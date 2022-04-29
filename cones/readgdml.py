@@ -1,6 +1,6 @@
 import pyg4ometry
 import sys
-from coneGDML import path
+from weightsCone import path
 
 
 def display():

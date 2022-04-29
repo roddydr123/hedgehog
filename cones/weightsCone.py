@@ -1,6 +1,9 @@
 import numpy as np
 
 
+path = '/mnt/c/Users/david/Documents/TRIUMF/projects/3DRM-design/'
+
+
 def blockSpecs(SOBPwidth, range, steps):
     weights = calcWeights(steps, SOBPwidth, range)
     height = blockHeight(steps, SOBPwidth)

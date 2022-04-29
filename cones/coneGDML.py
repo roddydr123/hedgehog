@@ -2,9 +2,7 @@ import pyg4ometry
 import numpy as np
 import sys
 from cubic import optimizer
-
-
-path = 'C:/Users/david/Documents/TRIUMF/projects/3DRM-design/'
+from weightsCone import path
 
 
 def baseQuad(x):

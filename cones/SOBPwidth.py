@@ -2,7 +2,7 @@ import numpy as np
 import sys
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
-from coneGDML import path
+from weightsCone import path
 
 
 def main():
