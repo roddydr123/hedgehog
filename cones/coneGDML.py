@@ -4,6 +4,9 @@ import sys
 from cubic import optimizer
 
 
+path = 'C:/Users/david/Documents/TRIUMF/projects/3DRM-design/'
+
+
 def baseQuad(x):
     return x**2
 
@@ -52,8 +55,8 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     # move pins down to meet the base at z=0
     thicknesses -= thicknesses[0]
 
-    b1 = pyg4ometry.geant4.solid.Box("b1", baseEdges, baseEdges, baseThickness,
-                                     reg, lunit="cm")
+    b1 = pyg4ometry.geant4.solid.Box("b1", baseEdges + 0.4, baseEdges + 0.4,
+                                     baseThickness, reg, lunit="cm")
     b1_l = pyg4ometry.geant4.LogicalVolume(b1, "G4_Fe", "b1_l", reg,
                                            lunit="cm")
     pyg4ometry.geant4.PhysicalVolume([0, 0, 0],
@@ -112,13 +115,13 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
             # b2_p = pyg4ometry.geant4.PhysicalVolume([np.pi,0,0],
             # [x,y,BshiftX],b2_l,f"cone_p-{i}-{j}",wl,reg)
 
-            print(f"pin #{count}/{no_pins} done! x: {x}, y: {y}")
+            print(f"pin #{count}/{no_pins} x: {x}, y: {y}")
 
     # write to gdml
     print("writing...")
     writer = pyg4ometry.gdml.Writer()
     writer.addDetector(reg)
-    writer.write(f"files/{filename}.gdml")
+    writer.write(f"{path}files/{filename}.gdml")
     print("done")
 
 

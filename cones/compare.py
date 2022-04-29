@@ -1,6 +1,7 @@
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
+from coneGDML import path
 
 
 def main():
@@ -9,7 +10,7 @@ def main():
     fig, ax = plt.subplots()
 
     for i, filename in enumerate(target_files):
-        sim_array = np.genfromtxt(f'data/{filename}.txt', skip_header=1)
+        sim_array = np.genfromtxt(f'{path}data/{filename}.txt', skip_header=1)
         sim_sobp = [sim_array[:, 0], sim_array[:, 2]]
 
         # normalise the sobp

@@ -1,11 +1,13 @@
 # dont track these folders
-squares/
-__pycache__/
+cones/__pycache__/
+cones/data/
 
 
 # or these filetypes
 .inp
 .gdml
 .npz
-.txt
 .pyc
+
+# these files
+cones/runner.py

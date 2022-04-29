@@ -1,6 +1,7 @@
 import pyg4ometry
 import sys
 import re
+from coneGDML import path
 
 
 def convert(zsep, file=None):
@@ -9,7 +10,7 @@ def convert(zsep, file=None):
         file = sys.argv[1]
     print("opening file...")
 
-    reader = pyg4ometry.gdml.Reader(f"files/{file}.gdml")
+    reader = pyg4ometry.gdml.Reader(f"{path}files/{file}.gdml")
     logical = reader.getRegistry().getWorldVolume()
 
     # do the conversion to fluka geometry
@@ -31,7 +32,7 @@ def convert(zsep, file=None):
     print("writing...")
     w = pyg4ometry.fluka.Writer()
     w.addDetector(freg)
-    w.write(f"files/{file}.inp")
+    w.write(f"{path}files/{file}.inp")
     print("adding to template...")
     addToTemplate(file, zsep)
     print("complete!")
@@ -41,14 +42,14 @@ def addToTemplate(filename, zsep):
 
     # choose the template based on z separation
     if zsep == 36.5:
-        template = open("files/gtemplate36.inp", "r")
+        template = open("static/gtemplate36.inp", "r")
     else:
-        template = open("files/template.inp", "r")
+        template = open("static/template.inp", "r")
 
     # merge the generated geometry with a template file
-    with open(f"files/{filename}geo.inp", "w") as file:
+    with open(f"{path}files/{filename}geo.inp", "w") as file:
         templines = template.readlines()
-        geometryfile = open(f"files/{filename}.inp", "r")
+        geometryfile = open(f"{path}files/{filename}.inp", "r")
         geolines = geometryfile.readlines()[:-1]
         # split the template
         for i in range(len(templines)):
