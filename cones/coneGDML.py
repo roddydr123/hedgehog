@@ -13,8 +13,8 @@ def getPinLocs(d_across_pinbase, baseEdges):
     q = 3 * d_across_pinbase / np.sqrt(3)
 
     # create the arrays based on hexagonal pinbases
-    pinLocArrX = (np.arange(baseEdges * -1/2, baseEdges/2, q/2))
-    pinLocArrY = (np.arange(baseEdges * -1/2, baseEdges/2, d_across_pinbase))
+    pinLocArrX = (np.arange(baseEdges * -1/2, baseEdges/2, q/2)) + q/2
+    pinLocArrY = (np.arange(baseEdges * -1/2, baseEdges/2, d_across_pinbase)) + d_across_pinbase
 
     return pinLocArrX, pinLocArrY
 
@@ -28,8 +28,10 @@ def circCheck(rad, d_across_pinbase, x, y):
     x /= 10
     y /= 10
     pinrad = d_across_pinbase / 2
+    tolerance = 1E-2
+
     r = np.sqrt(x**2 + y**2)
-    if (r + pinrad) > rad:
+    if (r + pinrad) > (rad + tolerance):
         return False
     return True
 
@@ -132,6 +134,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
 
                 print(f"{np.round(count * 100 / no_pins, 0)}% complete, pin at x: {x/10}, y: {y/10}")
 
+    print('100% complete')
     # write to gdml
     print("writing...")
     writer = pyg4ometry.gdml.Writer()
