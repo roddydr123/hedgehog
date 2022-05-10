@@ -12,9 +12,15 @@ def baseQuad(x):
 def getPinLocs(d_across_pinbase, baseEdges):
     q = 3 * d_across_pinbase / np.sqrt(3)
 
+    start = (baseEdges * -1/2) + d_across_pinbase/2
+    stop = baseEdges/2 - d_across_pinbase/2
+
+    x_offset = 0
+    y_offset = 0  # d_across_pinbase/2
+
     # create the arrays based on hexagonal pinbases
-    pinLocArrX = (np.arange(baseEdges * -1/2, baseEdges/2, q/2)) + q/2
-    pinLocArrY = (np.arange(baseEdges * -1/2, baseEdges/2, d_across_pinbase)) + d_across_pinbase
+    pinLocArrX = (np.arange(start, stop, q/2)) + x_offset
+    pinLocArrY = (np.arange(start, stop, d_across_pinbase)) + y_offset
 
     return pinLocArrX, pinLocArrY
 
@@ -32,7 +38,7 @@ def circCheck(rad, d_across_pinbase, x, y):
 
     r = np.sqrt(x**2 + y**2)
     if (r + pinrad) > (rad + tolerance):
-        return False
+        return True
     return True
 
 
@@ -132,7 +138,8 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
                 # b2_p = pyg4ometry.geant4.PhysicalVolume([np.pi,0,0],
                 # [x,y,BshiftX],b2_l,f"cone_p-{i}-{j}",wl,reg)
 
-                print(f"{np.round(count * 100 / no_pins, 0)}% complete, pin at x: {x/10}, y: {y/10}")
+                print(f"{np.round(count * 100 / no_pins, 0)}"
+                      f"% complete, pin at x: {x/10}, y: {y/10}")
 
     print('100% complete')
     # write to gdml
