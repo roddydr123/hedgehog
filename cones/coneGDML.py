@@ -15,12 +15,9 @@ def getPinLocs(d_across_pinbase, baseEdges):
     start = (baseEdges * -1/2) + d_across_pinbase/2
     stop = baseEdges/2 - d_across_pinbase/2
 
-    x_offset = 0
-    y_offset = 0  # d_across_pinbase/2
-
     # create the arrays based on hexagonal pinbases
-    pinLocArrX = (np.arange(start, stop, q/2)) + x_offset
-    pinLocArrY = (np.arange(start, stop, d_across_pinbase)) + y_offset
+    pinLocArrX = (np.arange(start, stop, q/2))
+    pinLocArrY = (np.arange(start, stop, d_across_pinbase))
 
     return pinLocArrX, pinLocArrY
 
@@ -38,7 +35,7 @@ def circCheck(rad, d_across_pinbase, x, y):
 
     r = np.sqrt(x**2 + y**2)
     if (r + pinrad) > (rad + tolerance):
-        return True
+        return False
     return True
 
 
