@@ -163,7 +163,8 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
         ax4.set_ylabel("Dose")
 
         if filename:
-            np.savez(f'{path}data/{filename}-gen', depth_dose_sobp=depth_dose_sobp)
+            np.savez(f'{path}data/{filename}-gen',
+                     depth_dose_sobp=depth_dose_sobp)
 
         plt.show()
 

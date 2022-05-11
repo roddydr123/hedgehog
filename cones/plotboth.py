@@ -15,7 +15,8 @@ def main():
     sim_array = np.genfromtxt(f'{path}data/{target_file}.txt', skip_header=1)
     sim_sobp = [sim_array[:, 0], sim_array[:, 2]]
 
-    depth_dose_sobp = np.load(f'{path}data/{target_file}-gen.npz')["depth_dose_sobp"]
+    depth_dose_sobp = np.load(f'{path}data/'
+                              f'{target_file}-gen.npz')["depth_dose_sobp"]
 
     # normalise the sobps
     depth_dose_sobp[1] /= depth_dose_sobp[1].max()

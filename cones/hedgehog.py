@@ -24,11 +24,12 @@ class hedgehog():
                                  self.zsep, self.usrWeights, show=1,
                                  filename=self.filename)
 
-    def generateGDML(self, baseEdges):
+    def generateGDML(self, baseEdges, rad):
         self.baseEdges = baseEdges
+        self.rad = rad
         build(self.d_across_pinbase, self.baseEdges, self.filename,
               self.SOBPwidth, self.range, self.steps, self.tolerance,
-              self.zsep, self.usrWeights, pinData=self.pinData)
+              self.zsep, self.usrWeights, self.rad, pinData=self.pinData)
 
     def gdml2f(self):
         g2f.convert(self.zsep, file=self.filename)

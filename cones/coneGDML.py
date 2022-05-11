@@ -12,15 +12,35 @@ def baseQuad(x):
 def getPinLocs(d_across_pinbase, baseEdges):
     q = 3 * d_across_pinbase / np.sqrt(3)
 
+    start = (baseEdges * -1/2) + d_across_pinbase/2
+    stop = baseEdges/2 - d_across_pinbase/2
+
     # create the arrays based on hexagonal pinbases
-    pinLocArrX = (np.arange(baseEdges * -1/2, baseEdges/2, q/2))
-    pinLocArrY = (np.arange(baseEdges * -1/2, baseEdges/2, d_across_pinbase))
+    pinLocArrX = (np.arange(start, stop, q/2))
+    pinLocArrY = (np.arange(start, stop, d_across_pinbase))
 
     return pinLocArrX, pinLocArrY
 
 
+def circCheck(rad, d_across_pinbase, x, y):
+    """
+    Determines if a given pin is entirely within a circle of radius
+    rad before allowing it to be printed.
+    """
+
+    x /= 10
+    y /= 10
+    pinrad = d_across_pinbase / 2
+    tolerance = 1E-2
+
+    r = np.sqrt(x**2 + y**2)
+    if (r + pinrad) > (rad + tolerance):
+        return False
+    return True
+
+
 def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
-          tolerance, zsep, usrWeights, pinData=None):
+          tolerance, zsep, usrWeights, rad, pinData=None):
 
     if not filename:
         filename = sys.argv[1]
@@ -53,7 +73,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     # move pins down to meet the base at z=0
     thicknesses -= thicknesses[0]
 
-    b1 = pyg4ometry.geant4.solid.Box("b1", baseEdges + 0.4, baseEdges + 0.4,
+    b1 = pyg4ometry.geant4.solid.Box("b1", baseEdges, baseEdges,
                                      baseThickness, reg, lunit="cm")
     b1_l = pyg4ometry.geant4.LogicalVolume(b1, "G4_Fe", "b1_l", reg,
                                            lunit="cm")
@@ -101,20 +121,24 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
             BshiftX = 0  # baseQuad((x + d_across_pinbase/2) / 10)
             shift_thick = thicknesses  # + BshiftX
 
-            b2 = pyg4ometry.geant4.solid.Polycone(f"cone_s-{i}-{j}", 0,
-                                                  2 * np.pi, shift_thick, rot,
-                                                  radii, reg, lunit="cm")
-            b2_l = pyg4ometry.geant4.LogicalVolume(b2, "G4_Fe",
-                                                   f"cone_l-{i}-{j}", reg,
-                                                   lunit="cm")
-            pyg4ometry.geant4.PhysicalVolume([0, 0, 0], [x, y, BshiftX],
-                                             b2_l, f"cone_p-{i}-{j}",
-                                             wl, reg)
-            # b2_p = pyg4ometry.geant4.PhysicalVolume([np.pi,0,0],
-            # [x,y,BshiftX],b2_l,f"cone_p-{i}-{j}",wl,reg)
+            if circCheck(rad, d_across_pinbase, x, y):
 
-            print(f"pin #{count}/{no_pins} x: {x}, y: {y}")
+                b2 = pyg4ometry.geant4.\
+                    solid.Polycone(f"cone_s-{i}-{j}", 0, 2 * np.pi,
+                                   shift_thick, rot, radii, reg, lunit="cm")
+                b2_l = pyg4ometry.geant4.\
+                    LogicalVolume(b2, "G4_Fe", f"cone_l-{i}-{j}", reg,
+                                  lunit="cm")
+                pyg4ometry.geant4.\
+                    PhysicalVolume([0, 0, 0], [x, y, BshiftX], b2_l,
+                                   f"cone_p-{i}-{j}", wl, reg)
+                # b2_p = pyg4ometry.geant4.PhysicalVolume([np.pi,0,0],
+                # [x,y,BshiftX],b2_l,f"cone_p-{i}-{j}",wl,reg)
 
+                print(f"{np.round(count * 100 / no_pins, 0)}"
+                      f"% complete, pin at x: {x/10}, y: {y/10}")
+
+    print('100% complete')
     # write to gdml
     print("writing...")
     writer = pyg4ometry.gdml.Writer()
