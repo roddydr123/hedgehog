@@ -67,10 +67,6 @@ RPP bground    -22.065001 -12.065001 -15. 15. -5. 140.
 RCC bgrov1     0.0 0.0 102.475004 0.0 0.0 0.635000 10.477500
 * bgrov2
 RCC bgrov2     0.0 0.0 106.309998 0.0 0.0 0.635000 10.477500
-* bhole1
-RCC bhole1     0.0 0.952500 -0.850000 0.0 0.0 2. 0.158700
-* bhole2
-RCC bhole2     0.0 -0.952500 -0.850000 0.0 0.0 2. 0.158750
 * bionback
 RCC bionback   0.0 0.0 107. 0.0 0.0 0.635000 10.477500
 * bionfron
@@ -331,11 +327,11 @@ RCC rkapto25   0.0 0.0 105.675003 0.0 0.0 0.002540 7.620000
 * rkapton6
 RCC rkapto26   0.0 0.0 106.309998 0.0 0.0 0.002540 7.620000
 * rionch1
-RCC rionch2    0.0 0.0 5.32003 0.0 0.0 0.00254 2.5
+RCC rionch2    0.0 0.0 5.3175 0.0 0.0 0.00254 2.5
 * rionch1
-RCC rionch3    0.0 0.0 5.64008 0.0 0.0 0.00254 2.5
+RCC rionch3    0.0 0.0 5.6275 0.0 0.0 0.00254 2.5
 * rionch1
-RCC rionch4    0.0 0.0 5.96012 0.0 0.0 0.00254 5.500000
+RCC rionch4    0.0 0.0 5.945 0.0 0.0 0.00254 5.500000
 RCC bSColBra   0.0 0.0 30.59 0.0 0.0 .64 3.175
 RCC bSColBr1   0.0 0.0 31. 0.0 0.0 2.2 2.545
 RCC bSColBr2   0.0 0.0 30.59 0.0 0.0 6.16 0.9525
@@ -495,6 +491,7 @@ RPP bSRAM57    -1.3025 1.3025 -3.657 -3.057 153.25 153.26
 RPP bSRAM58    -1.3025 1.3025 -2.943 -2.343 153.25 153.26
 RPP bSRAM59    -1.3025 1.3025 -2.229 -1.629 153.25 153.26
 RPP bSRAM60    -1.3025 1.3025 -1.515 -0.912 153.25 153.26
+RPP bwaterbx   -12.0 8.0 -2.5 2.5 72.39 92.39
 END
 rFloor       5 +bFloor
 * Reg # 1
@@ -551,8 +548,8 @@ rAirCol1     5 +baircol1 -colcase1
                | +collout +collhole
                | +collcash +colcase1 -cylind3 -collout -bcol88
                | +cylind4 +cylind3 -collout -bpb
-               | +bhole1 +bpb
-               | +bhole2 +bpb
+               |  +bpb
+               |  +bpb
                | +baircol1 +bground
 * Reg # 8
 * rAirCol2; assigned material: AIR; mat # (33)
@@ -577,7 +574,7 @@ rOutAir      5 +ioncsbx +bioninse
                -bSRAM26 -bSRAM27 -bSRAM28 -bSRAM29 -bSRAM30 -bSRAM31 -bSRAM32 -bSRAM33 -bSRAM34 -bSRAM35 -bSRAM36
                -bSRAM37 -bSRAM38 -bSRAM39 -bSRAM40 -bSRAM41 -bSRAM42 -bSRAM43 -bSRAM44 -bSRAM45 -bSRAM46 -bSRAM47
                -bSRAM48 -bSRAM49 -bSRAM50 -bSRAM51 -bSRAM52 -bSRAM53 -bSRAM54 -bSRAM55 -bSRAM56 -bSRAM57 -bSRAM58
-               -bSRAM59 -bSRAM60 -bBrIrCoD -bBrIrCoI
+               -bSRAM59 -bSRAM60 -bBrIrCoD -bBrIrCoI -bwaterbx
                | +rngHole +rngshift
 * Reg # 11
 * rMaIon1; assigned material: Aluminium; mat # (10)
@@ -644,9 +641,6 @@ rColCU2      5 +cylind3  -cylind4  -cyllind5  -collout  -collhole -bdowltop -bdo
 * Reg # 55
 * rColl1; assigned material: Brass; mat # (30)
 rColl1       5 +bcol88  -collhole |  +collout  -collhole
-* Reg # 56
-* rPb; assigned material: Lead; mat # (17)
-rPb          5 +bpb  -bhole1  -bhole2
 * Reg # 57
 * rLocPad; assigned material: Stainles; mat # (28)
 rLocPad      5 +bdowltop | +bdowlbot
@@ -816,516 +810,17 @@ rSRAM60      5 +bSRAM60
 rBrIrCoD     5 +bBrIrCoD -bBrIrCoI
                | +(+bBrCoZ2 -bBrCoZ1 +bBrCoX2 -bBrCoX1 +bBrCoY2 -bBrCoY1) -bBrIrCoI
 rBrIrCoI     5 +bBrIrCoI
+rwaterbx     5 +bwaterbx
 END
 GEOEND
-BEAM          -0.116 -.0021929       0.0      -1.2      -1.2       1.0PROTON
+!@what.2=-dT2dp(74*MeV, 1*MeV, Mp)
+BEAM          -0.074-.00266443       0.0      -1.2      -1.2       1.0PROTON
 BEAMPOS          0.0       0.0      -50.       0.0       0.0
 PHYSICS           2.                                                  EVAPORAT
 PHYSICS           1.                                                  COALESCE
 * Polymethyl methacrylate lucite plexiglas (C5_H8_O2)n
 *
 MATERIAL                            1.19                              PLEXIGLA
-SCORE         PROTON      DOSE   DOSE-EQ   NEUTRON
-USRBDX          101.    PROTON      -31.   rOutAir    rSRAM1        1.SRAM1p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir    rSRAM2        1.SRAM2p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir    rSRAM3        1.SRAM3p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir    rSRAM4        1.SRAM4p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir    rSRAM5        1.SRAM5p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir    rSRAM6        1.SRAM6p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir    rSRAM7        1.SRAM7p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir    rSRAM8        1.SRAM8p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir    rSRAM9        1.SRAM9p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM10        1.SRAM10p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM11        1.SRAM11p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM12        1.SRAM12p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM13        1.SRAM13p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM14        1.SRAM14p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM15        1.SRAM15p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM16        1.SRAM16p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM17        1.SRAM17p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM18        1.SRAM18p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM19        1.SRAM19p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM20        1.SRAM20p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM21        1.SRAM21p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM22        1.SRAM22p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM23        1.SRAM23p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM24        1.SRAM24p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM25        1.SRAM25p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM26        1.SRAM26p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM27        1.SRAM27p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM28        1.SRAM28p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM29        1.SRAM29p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -31.   rOutAir   rSRAM30        1.SRAM30p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM31        1.SRAM31p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM32        1.SRAM32p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM33        1.SRAM33p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM34        1.SRAM34p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM35        1.SRAM35p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM36        1.SRAM36p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM37        1.SRAM37p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM38        1.SRAM38p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM39        1.SRAM39p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM40        1.SRAM40p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM41        1.SRAM41p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM42        1.SRAM42p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM43        1.SRAM43p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM44        1.SRAM44p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM45        1.SRAM45p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM46        1.SRAM46p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM47        1.SRAM47p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM48        1.SRAM48p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM49        1.SRAM49p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM50        1.SRAM50p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM51        1.SRAM51p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM52        1.SRAM52p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM53        1.SRAM53p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM54        1.SRAM54p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM55        1.SRAM55p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM56        1.SRAM56p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM57        1.SRAM57p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM58        1.SRAM58p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM59        1.SRAM59p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.    PROTON      -41.   rOutAir   rSRAM60        1.SRAM60p
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir    rSRAM1        1.SRAM1nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir    rSRAM2        1.SRAM2nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir    rSRAM3        1.SRAM3nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir    rSRAM4        1.SRAM4nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir    rSRAM5        1.SRAM5nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir    rSRAM6        1.SRAM6nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir    rSRAM7        1.SRAM7nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir    rSRAM8        1.SRAM8nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir    rSRAM9        1.SRAM9nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM10        1.SRAM10nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM11        1.SRAM11nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM12        1.SRAM12nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM13        1.SRAM13nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM14        1.SRAM14nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM15        1.SRAM15nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM16        1.SRAM16nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM17        1.SRAM17nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM18        1.SRAM18nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM19        1.SRAM19nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM20        1.SRAM20nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM21        1.SRAM21nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM22        1.SRAM22nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM23        1.SRAM23nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM24        1.SRAM24nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM25        1.SRAM25nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM26        1.SRAM26nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM27        1.SRAM27nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM28        1.SRAM28nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM29        1.SRAM29nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -32.   rOutAir   rSRAM30        1.SRAM30nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM31        1.SRAM31nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM32        1.SRAM32nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM33        1.SRAM33nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM34        1.SRAM34nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM35        1.SRAM35nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM36        1.SRAM36nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM37        1.SRAM37nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM38        1.SRAM38nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM39        1.SRAM39nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM40        1.SRAM40nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM41        1.SRAM41nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM42        1.SRAM42nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM43        1.SRAM43nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM44        1.SRAM44nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM45        1.SRAM45nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM46        1.SRAM46nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM47        1.SRAM47nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM48        1.SRAM48nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM49        1.SRAM49nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM50        1.SRAM50nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM51        1.SRAM51nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM52        1.SRAM52nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM53        1.SRAM53nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM54        1.SRAM54nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM55        1.SRAM55nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM56        1.SRAM56nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM57        1.SRAM57nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM58        1.SRAM58nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM59        1.SRAM59nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -42.   rOutAir   rSRAM60        1.SRAM60nl
-USRBDX          0.02       0.0       50.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir    rSRAM1        1.SRAM1n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir    rSRAM2        1.SRAM2n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir    rSRAM3        1.SRAM3n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir    rSRAM4        1.SRAM4n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir    rSRAM5        1.SRAM5n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir    rSRAM6        1.SRAM6n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir    rSRAM7        1.SRAM7n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir    rSRAM8        1.SRAM8n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir    rSRAM9        1.SRAM9n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM10        1.SRAM10n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM11        1.SRAM11n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM12        1.SRAM12n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM13        1.SRAM13n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM14        1.SRAM14n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM15        1.SRAM15n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM16        1.SRAM16n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM17        1.SRAM17n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM18        1.SRAM18n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM19        1.SRAM19n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM20        1.SRAM20n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM21        1.SRAM21n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM22        1.SRAM22n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM23        1.SRAM23n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM24        1.SRAM24n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM25        1.SRAM25n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM26        1.SRAM26n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM27        1.SRAM27n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM28        1.SRAM28n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM29        1.SRAM29n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -33.   rOutAir   rSRAM30        1.SRAM30n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM31        1.SRAM31n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM32        1.SRAM32n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM33        1.SRAM33n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM34        1.SRAM34n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM35        1.SRAM35n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM36        1.SRAM36n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM37        1.SRAM37n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM38        1.SRAM38n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM39        1.SRAM39n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM40        1.SRAM40n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM41        1.SRAM41n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM42        1.SRAM42n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM43        1.SRAM43n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM44        1.SRAM44n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM45        1.SRAM45n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM46        1.SRAM46n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM47        1.SRAM47n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM48        1.SRAM48n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM49        1.SRAM49n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM50        1.SRAM50n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM51        1.SRAM51n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM52        1.SRAM52n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM53        1.SRAM53n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM54        1.SRAM54n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM55        1.SRAM55n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM56        1.SRAM56n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM57        1.SRAM57n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM58        1.SRAM58n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM59        1.SRAM59n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.   NEUTRON      -43.   rOutAir   rSRAM60        1.SRAM60n
-USRBDX         0.116      0.02       96.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir    rSRAM1        1.SRAM1b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir    rSRAM2        1.SRAM2b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir    rSRAM3        1.SRAM3b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir    rSRAM4        1.SRAM4b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir    rSRAM5        1.SRAM5b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir    rSRAM6        1.SRAM6b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir    rSRAM7        1.SRAM7b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir    rSRAM8        1.SRAM8b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir    rSRAM9        1.SRAM9b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM10        1.SRAM10b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM11        1.SRAM11b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM12        1.SRAM12b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM13        1.SRAM13b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM14        1.SRAM14b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM15        1.SRAM15b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM16        1.SRAM16b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM17        1.SRAM17b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM18        1.SRAM18b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM19        1.SRAM19b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM20        1.SRAM20b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM21        1.SRAM21b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM22        1.SRAM22b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM23        1.SRAM23b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM24        1.SRAM24b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM25        1.SRAM25b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM26        1.SRAM26b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM27        1.SRAM27b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM28        1.SRAM28b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM29        1.SRAM29b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -34.   rOutAir   rSRAM30        1.SRAM30b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM31        1.SRAM31b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM32        1.SRAM32b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM33        1.SRAM33b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM34        1.SRAM34b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM35        1.SRAM35b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM36        1.SRAM36b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM37        1.SRAM37b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM38        1.SRAM38b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM39        1.SRAM39b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM40        1.SRAM40b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM41        1.SRAM41b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM42        1.SRAM42b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM43        1.SRAM43b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM44        1.SRAM44b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM45        1.SRAM45b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM46        1.SRAM46b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM47        1.SRAM47b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM48        1.SRAM48b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM49        1.SRAM49b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM50        1.SRAM50b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM51        1.SRAM51b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM52        1.SRAM52b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM53        1.SRAM53b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM54        1.SRAM54b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM55        1.SRAM55b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM56        1.SRAM56b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM57        1.SRAM57b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM58        1.SRAM58b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM59        1.SRAM59b
-USRBDX         0.116     0.001      115.                            1. &
-USRBDX          101.  BEAMPART      -44.   rOutAir   rSRAM60        1.SRAM60b
-USRBDX         0.116     0.001      115.                            1. &
-USRYIELD       1401.   NEUTRON      -21.  rColPoly  rAirCol1          NProdE1
-USRYIELD       0.116     0.001      116.  3.141592       0.0           &
-USRYIELD       1401.   NEUTRON      -23.  rColl2Ho  rAirCol2          NProdE2
-USRYIELD       0.116     0.001      116.  3.141592       0.0           &
-USRYIELD       1401.   NEUTRON      -25.  rIrColPl   rOutAir          NProdE3
-USRYIELD       0.116     0.001      116.  3.141592       0.0           &
-USRYIELD       1401.   NEUTRON      -27.  rBrIrCoD   rOutAir          NProdE4
-USRYIELD       0.116     0.001      116.  3.141592       0.0           &
-USRYIELD        114.   NEUTRON      -22.  rColPoly  rAirCol1          NProdA1
-USRYIELD    3.141592       0.0      116.     0.116     0.001           &
-USRYIELD        114.   NEUTRON      -24.  rColl2Ho  rAirCol2          NProdA2
-USRYIELD    3.141592       0.0      116.     0.116     0.001           &
-USRYIELD        114.   NEUTRON      -26.  rIrColPl   rOutAir          NProdA3
-USRYIELD    3.141592       0.0      116.     0.116     0.001           &
-USRYIELD        114.   NEUTRON      -28.  rBrIrCoD   rOutAir          NProdA4
-USRYIELD    3.141592       0.0      116.     0.116     0.001           &
-USRBIN           10.   NEUTRON      -77.       50.       0.5      160.NeutX
-USRBIN          -50.      -0.5      -30.      100.        1.      190. &
-USRBIN           10.   NEUTRON      -78.       0.5       50.      160.NeutY
-USRBIN          -0.5      -50.      -30.        1.      100.      190. &
 COMPOUND    -.080538  HYDROGEN  -.599848    CARBON  -.319614    OXYGENPLEXIGLA
 * Epoxy (molded)
 * Chemical           H-C - C-H     CH3  H-C - C-H        H   H   H
@@ -1408,7 +903,7 @@ ASSIGNMA      KAPTON  rKapton8
 ASSIGNMA      COPPER  rColl2Cu
 ASSIGNMA    POLYETHY  rColl2Ho
 ASSIGNMA    Stainles  rLocPad2
-ASSIGNMA      KAPTON   rIonch1
+ASSIGNMA    ALUMINUM   rIonch1
 ASSIGNMA    ALUMINUM  rIonChHo
 ASSIGNMA    Stainles   rSteBLi
 ASSIGNMA      VACUUM      rVac
@@ -1423,7 +918,6 @@ ASSIGNMA        IRON    rSlab7
 ASSIGNMA    POLYETHY  rColPoly
 ASSIGNMA      COPPER   rColCU2
 ASSIGNMA       Brass    rColl1
-ASSIGNMA        LEAD       rPb
 ASSIGNMA    Stainles   rLocPad
 ASSIGNMA    ALUMINUM  rPMOuter
 ASSIGNMA    ALUMINUM   rPMBack
@@ -1452,9 +946,9 @@ ASSIGNMA         AIR  rBckDet4
 ASSIGNMA         AIR  rBckDet2
 ASSIGNMA         AIR  rBckDet3
 ASSIGNMA         AIR   rPMOpen
-ASSIGNMA      KAPTON   rIonch4
-ASSIGNMA      KAPTON   rIonch2
-ASSIGNMA      KAPTON   rIonch3
+ASSIGNMA    ALUMINUM   rIonch4
+ASSIGNMA    ALUMINUM   rIonch2
+ASSIGNMA    ALUMINUM   rIonch3
 ASSIGNMA       Brass  rSColBra
 ASSIGNMA         AIR   rColHol
 ASSIGNMA    Stainles     rXray
@@ -1532,6 +1026,11 @@ ASSIGNMA       Brass  rBrIrCoD
 ASSIGNMA         AIR  rBrIrCoI
 LOW-NEUT
 ASSIGNMA         AIR    rSRAM4
+ASSIGNMA       WATER  rwaterbx
+USRBIN           10.      DOSE      -21.       0.3       0.3     77.39wbox1
+USRBIN          -0.3      -0.3     72.39        1.        1.     1200. &
+USRBIN           10.      DOSE      -21.        1.        1.     79.39wbox2
+USRBIN           -1.       -1.     72.39        1.        1.     1200. &
 * default amount of primaries
 START      2000000.0                                     0.0100000000.
 STOP
