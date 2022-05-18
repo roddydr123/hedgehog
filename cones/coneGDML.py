@@ -56,7 +56,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     thicknesses = pinData["thicknesses"]
 
     # create the world
-    ws = pyg4ometry.geant4.solid.Box("ws", 5e6, 5e6, 5e6, reg)
+    ws = pyg4ometry.geant4.solid.Box("ws", 5e3, 5e3, 5e3, reg)
     wl = pyg4ometry.geant4.LogicalVolume(ws, "G4_Galactic", "wl", reg)
     reg.setWorld(wl.name)
 
@@ -73,23 +73,30 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     # move pins down to meet the base at z=0
     thicknesses -= thicknesses[0]
 
+    # move everything to the correct z location
+    new_zero = 35.67 + 0.05
+
+    # make air box around hedgehog
+    hbox_thick = 2
+
+    hb1 = pyg4ometry.geant4.solid.Box("hb1", baseEdges, baseEdges,
+                                      hbox_thick, reg, lunit="cm")
+    hb1_l = pyg4ometry.geant4.LogicalVolume(hb1, "G4_Fe", "hb1_l", reg,
+                                            lunit="cm")
+    pyg4ometry.geant4.\
+        PhysicalVolume([0, 0, 0],
+                       [0, 0, (new_zero + (hbox_thick/2))*10],
+                       hb1_l, "hb1_p", wl, reg)
+
+    # create the base object
     b1 = pyg4ometry.geant4.solid.Box("b1", baseEdges, baseEdges,
                                      baseThickness, reg, lunit="cm")
     b1_l = pyg4ometry.geant4.LogicalVolume(b1, "G4_Fe", "b1_l", reg,
                                            lunit="cm")
     pyg4ometry.geant4.PhysicalVolume([0, 0, 0],
-                                     [0, 0, -(baseThickness/2)*10],
-                                     b1_l, "b1_p", wl, reg)
-
-    # make the water box
-    water_thickness = 10
-    z_disp = zsep + (water_thickness / 2)
-    wa1 = pyg4ometry.geant4.solid.Box("wa1", 50, 50, water_thickness, reg,
-                                      lunit="cm")
-    wa1_l = pyg4ometry.geant4.LogicalVolume(wa1, "G4_Fe", "wa1_l", reg,
-                                            lunit="cm")
-    pyg4ometry.geant4.PhysicalVolume([0, 0, 0], [0, 0, z_disp * 10],
-                                     wa1_l, "wa1_p", wl, reg)
+                                     [0, 0, (baseThickness/2 -
+                                             hbox_thick/2)*10],
+                                     b1_l, "b1_p", hb1_l, reg)
 
     rot = np.zeros_like(pinData["radii"])
 
@@ -118,7 +125,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
             count = count + 1
 
             # shift pin up by correct amount
-            BshiftX = 0  # baseQuad((x + d_across_pinbase/2) / 10)
+            # BshiftX = 0  # baseQuad((x + d_across_pinbase/2) / 10)
             shift_thick = thicknesses  # + BshiftX
 
             if circCheck(rad, d_across_pinbase, x, y):
@@ -130,8 +137,9 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
                     LogicalVolume(b2, "G4_Fe", f"cone_l-{i}-{j}", reg,
                                   lunit="cm")
                 pyg4ometry.geant4.\
-                    PhysicalVolume([0, 0, 0], [x, y, BshiftX], b2_l,
-                                   f"cone_p-{i}-{j}", wl, reg)
+                    PhysicalVolume([0, 0, 0], [x, y, (- hbox_thick/2 +
+                                                      baseThickness)*10],
+                                   b2_l, f"cone_p-{i}-{j}", hb1_l, reg)
                 # b2_p = pyg4ometry.geant4.PhysicalVolume([np.pi,0,0],
                 # [x,y,BshiftX],b2_l,f"cone_p-{i}-{j}",wl,reg)
 

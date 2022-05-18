@@ -14,7 +14,7 @@ RPP bairbeam   -15. 15. -15. 15. -182.539993 -19.539993
 * baircol1
 RPP baircol1   -12.1000 18. -22.500000 22.500000 -3.340000 4.65
 * baircol2
-RPP baircol2   -12.1 18. -18. 18. 30. 37.
+RPP baircol2   -12.1 18. -18. 18. 30. 40.
 * bairioch
 RPP bairioch   -12.10 18. -18. 18. 97.46 112.46
 * bairpm
@@ -491,8 +491,8 @@ RPP bSRAM57    -1.3025 1.3025 -3.657 -3.057 153.25 153.26
 RPP bSRAM58    -1.3025 1.3025 -2.943 -2.343 153.25 153.26
 RPP bSRAM59    -1.3025 1.3025 -2.229 -1.629 153.25 153.26
 RPP bSRAM60    -1.3025 1.3025 -1.515 -0.912 153.25 153.26
-RPP bwaterbx   -12.0 8.0 -2.5 2.5 72.39 92.39
-END
+RPP bwaterbx   -12. 8. -2.5 2.5 72.39 92.39
+* Geometry gets spliced in here (and regions)
 rFloor       5 +bFloor
 * Reg # 1
 * BlkHole; assigned material: Blackhole; mat # (1)
@@ -553,10 +553,10 @@ rAirCol1     5 +baircol1 -colcase1
                | +baircol1 +bground
 * Reg # 8
 * rAirCol2; assigned material: AIR; mat # (33)
-rAirCol2     5 +baircol2 -cyn2 -bcoll2_1 -bCuSlab
+rAirCol2     5 +baircol2 -cyn2 -bcoll2_1 -bCuSlab -B000201
                | +baircol2 +bground -bCuSlab
                | +bcoll2_1 +bSColBr2
-               | +bSColBr2 -bcoll2_1
+               | +bSColBr2 -bcoll2_1 -B000201
 * Reg # 9
 * rAirInCh; assigned material: AIR; mat # (33)
 rAirInCh     5 +bairioch -bionfron -bionback -bgrov1 -bgrov2 -bionma -rkapton8 -rkapton7 -bionho1
@@ -814,9 +814,9 @@ rwaterbx     5 +bwaterbx
 END
 GEOEND
 !@what.2=-dT2dp(74*MeV, 1*MeV, Mp)
-BEAM          -0.074-.00266443       0.0      -1.2      -1.2       1.0PROTON
+BEAM          -0.074-.00266443       0.0      -1.2      -1.2        1.PROTON
 BEAMPOS          0.0       0.0      -50.       0.0       0.0
-PHYSICS           2.                                                  EVAPORAT
+PHYSICS           3.                                                  EVAPORAT
 PHYSICS           1.                                                  COALESCE
 * Polymethyl methacrylate lucite plexiglas (C5_H8_O2)n
 *
@@ -1027,10 +1027,12 @@ ASSIGNMA         AIR  rBrIrCoI
 LOW-NEUT
 ASSIGNMA         AIR    rSRAM4
 ASSIGNMA       WATER  rwaterbx
+* everything else spliced in here
+FIXED
 USRBIN           10.      DOSE      -21.       0.3       0.3     77.39wbox1
 USRBIN          -0.3      -0.3     72.39        1.        1.     1200. &
 USRBIN           10.      DOSE      -21.        1.        1.     79.39wbox2
 USRBIN           -1.       -1.     72.39        1.        1.     1200. &
 * default amount of primaries
-START      2000000.0                                     0.0100000000.
+START       2000000.                                     0.0100000000.
 STOP
