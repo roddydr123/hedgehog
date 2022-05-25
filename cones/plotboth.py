@@ -10,31 +10,24 @@ def main():
 
     # load in all the files and store their names
     for file in sys.argv[1:]:
-        dataArr.append(loader(file))
+        dataArr.append(np.array(loader(file)))
         filenames.append(file)
 
     fig, ax = plt.subplots()
 
-    options = [
-        [1, 1, 1, 1],      # normalisation constants
-        [0.3, 0.3, 0, 0],      # extra x offset
-        ["", "", "", ""]    # plot line names
-    ]
-
     for i, sobp in enumerate(dataArr):
 
-        # normalise the sobps
-        sobp[1] /= sobp[1].max() * options[0][i]
-
         # move them so they start at zero on x axis
-        sobp[0] -= (sobp[0][0] + options[1][i])
+        a = np.argmax(sobp[1] > 0.4 * sobp[1].max())
+        sobp[0] -= sobp[0][a]
 
         # change units if needed
-        if sobp[0][-1] > 6:
+        if sobp[0][-1] > 10:
             sobp[0] /= 10
-        
-        if options[2][i] != "":
-            filenames[i] = options[2][i]
+
+        # proper normalisation
+        slice = (sobp[0] >= 3.2) & (sobp[0] <= 3.8)
+        sobp[1] /= np.average(sobp[1][slice])
 
         ax.plot(sobp[0], sobp[1], label=str(filenames[i]))
 
