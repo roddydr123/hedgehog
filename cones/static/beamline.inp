@@ -1028,7 +1028,7 @@ ASSIGNMA       WATER  rwaterbx
 FIXED
 USRBIN           10.      DOSE      -21.       0.3       0.3     77.39wbox1
 USRBIN          -0.3      -0.3     72.39       20.       20.     1200. &
-USRBIN           10.      DOSE      -21.        1.        1.     79.39wbox2
+USRBIN           10.      DOSE      -21.        2.        2.     77.39wbox2
 USRBIN           -1.       -1.     72.39      100.      100.     1200. &
 * default amount of primaries
 START       2000000.                                     0.0100000000.

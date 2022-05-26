@@ -143,7 +143,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
                 # b2_p = pyg4ometry.geant4.PhysicalVolume([np.pi,0,0],
                 # [x,y,BshiftX],b2_l,f"cone_p-{i}-{j}",wl,reg)
 
-                print(f"{np.round(count * 100 / no_pins, 0)}"
+                print(f"{np.round(count * 100 / no_pins, 1)}"
                       f"% complete, pin at x: {x/10}, y: {y/10}")
 
     print('100% complete')
