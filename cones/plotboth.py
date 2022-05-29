@@ -4,7 +4,10 @@ import numpy as np
 from weightsCone import path
 
 
-def main():
+plt.style.use('/mnt/c/users/david/documents/triumf/poster/poster.mplstyle')
+
+
+def sobp():
     dataArr = []
     filenames = []
 
@@ -13,7 +16,11 @@ def main():
         dataArr.append(np.array(loader(file)))
         filenames.append(file)
 
-    fig, ax = plt.subplots()
+    #filenames = ["Simulation result", "Resin small printer", "Resin industrial printer", "Nylon filament"]
+    #filenames = ["Simulation result", "Wide pins (7mm)", "Medium pins (5mm)", "Thin pins (3mm)"]
+    #filenames = ["Predicted by optimizer", "Simulation result"]
+
+    fig, ax = plt.subplots(figsize=(11.8, 5))
 
     for i, sobp in enumerate(dataArr):
 
@@ -29,10 +36,44 @@ def main():
         slice = (sobp[0] >= 3.2) & (sobp[0] <= 3.8)
         sobp[1] /= np.average(sobp[1][slice])
 
-        ax.plot(sobp[0], sobp[1], label=str(filenames[i]))
+    ax.legend()
+    ax.set_xlabel("Depth in water (cm)")
+    ax.set_ylabel("Normalised dose (D_pl)")
+    ax.set_xlim(0, 5)
+
+    plt.tight_layout()
+
+    plt.show()
+
+
+def profile():
+    dataArr = []
+    filenames = []
+
+    # load in all the files and store their names
+    for file in sys.argv[1:]:
+        dataArr.append(np.array(loader(file)))
+        filenames.append(file)
+
+    fig, ax = plt.subplots()
+
+    for i, profile in enumerate(dataArr):
+        # change units if needed
+        if profile[0][-1] > 10:
+            profile[0] /= 10
+
+        # centre the peak on zero
+        profile[0] -= profile[0][np.argmax(profile[1])]
+
+        # proper normalisation
+        #slice = (profile[0] >= -0.2) & (profile[0] <= 0.2)
+        #profile[1] /= np.average(profile[1][slice])
+        profile[1] /= profile[1].max()
+
+        ax.plot(profile[0], profile[1], label=str(filenames[i]))
 
     ax.legend()
-    ax.set_xlabel("Depth (cm)")
+    ax.set_xlabel("Distance across beamspot (cm)")
     ax.set_ylabel("Normalised dose")
 
     plt.show()
@@ -62,4 +103,12 @@ def loader(filename):
     return data
 
 
-main()
+def main():
+    if "pro" in ", ".join(sys.argv):
+        profile()
+    else:
+        sobp()
+
+
+if __name__ == "__main__":
+    main()

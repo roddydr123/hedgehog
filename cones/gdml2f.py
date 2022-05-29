@@ -56,8 +56,9 @@ def addToTemplate(filename, zsep):
 
     # choose the template based on z separation
     if zsep == 36.5:
-        #template = open("static/gtemplate36.inp", "r")
         template = open("static/beamline.inp", "r")
+
+        # template = open("static/reverse.inp", "r") for reverse hedgehog
     else:
         template = open("static/template.inp", "r")
 

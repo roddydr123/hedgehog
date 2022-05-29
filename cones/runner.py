@@ -1,7 +1,7 @@
 from hedgehog import hedgehog
 
 
-h = hedgehog(1, 4, 9, "full3", d_across_pinbase=0.3)
+h = hedgehog(1, 4, 9, "reverse", d_across_pinbase=0.7)
 
 # h.viewDetails()
 h.generateGDML(5, 1.5)

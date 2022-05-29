@@ -489,7 +489,7 @@ RPP bSRAM57    -1.3025 1.3025 -3.657 -3.057 153.25 153.26
 RPP bSRAM58    -1.3025 1.3025 -2.943 -2.343 153.25 153.26
 RPP bSRAM59    -1.3025 1.3025 -2.229 -1.629 153.25 153.26
 RPP bSRAM60    -1.3025 1.3025 -1.515 -0.912 153.25 153.26
-RPP bwaterbx   -12. 8. -2.5 2.5 72.39 92.39
+RPP bwaterbx   -12. 8. -2.5 2.5 67.1 87.1
 * Geometry gets spliced in here (and regions)
 rFloor       5 +bFloor
 * Reg # 1
@@ -552,7 +552,7 @@ rAirCol1     5 +baircol1 -colcase1
 rAirCol2     5 +baircol2 -cyn2 -bcoll2_1 -bCuSlab -B000201
                | +baircol2 +bground -bCuSlab
                | +bcoll2_1 +bSColBr2
-               | +bSColBr2 -bcoll2_1 -B000201
+               | +bSColBr2 -bcoll2_1
 * Reg # 9
 * rAirInCh; assigned material: AIR; mat # (33)
 rAirInCh     5 +bairioch -bionfron -bionback -bgrov1 -bgrov2 -bionma -rkapton8 -rkapton7 -bionho1
@@ -570,7 +570,7 @@ rOutAir      5 +ioncsbx +bioninse
                -bSRAM26 -bSRAM27 -bSRAM28 -bSRAM29 -bSRAM30 -bSRAM31 -bSRAM32 -bSRAM33 -bSRAM34 -bSRAM35 -bSRAM36
                -bSRAM37 -bSRAM38 -bSRAM39 -bSRAM40 -bSRAM41 -bSRAM42 -bSRAM43 -bSRAM44 -bSRAM45 -bSRAM46 -bSRAM47
                -bSRAM48 -bSRAM49 -bSRAM50 -bSRAM51 -bSRAM52 -bSRAM53 -bSRAM54 -bSRAM55 -bSRAM56 -bSRAM57 -bSRAM58
-               -bSRAM59 -bSRAM60 -bBrIrCoD -bBrIrCoI -bwaterbx
+               -bSRAM59 -bSRAM60 -bBrIrCoD -bBrIrCoI -bwaterbx -B000201
                | +rngHole +rngshift
 * Reg # 11
 * rMaIon1; assigned material: Aluminium; mat # (10)
@@ -1026,10 +1026,10 @@ ASSIGNMA         AIR    rSRAM4
 ASSIGNMA       WATER  rwaterbx
 * everything else spliced in here
 FIXED
-USRBIN           10.      DOSE      -21.       0.3       0.3     77.39wbox1
-USRBIN          -0.3      -0.3     72.39       20.       20.     1200. &
-USRBIN           10.      DOSE      -21.        2.        2.     77.39wbox2
-USRBIN           -2.       -2.     72.39      100.      100.     1200. &
+USRBIN           10.      DOSE      -21.       0.3       0.3      72.1wbox1
+USRBIN          -0.3      -0.3      67.1       20.       20.     1200. &
+USRBIN           10.      DOSE      -21.        2.        2.      72.1wbox2
+USRBIN           -2.       -2.      67.1      100.      100.     1200. &
 * default amount of primaries
 START       2000000.                                     0.0100000000.
 STOP
