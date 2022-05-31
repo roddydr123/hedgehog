@@ -154,7 +154,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
                 pyg4ometry.geant4.\
                     PhysicalVolume([0, 0, 0], [x, y, (- hbox_thick/2 +
                                                       baseThickness)*10],
-                                  b2_l, f"cone_p-{i}-{j}", hb1_l, reg)
+                                   b2_l, f"cone_p-{i}-{j}", hb1_l, reg)
 
                 print(f"{np.round(count * 100 / no_pins, 1)}"
                       f"% complete, pin at x: {x/10}, y: {y/10}")
@@ -168,8 +168,8 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     print("done")
 
 
-def buildreverse(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
-                 tolerance, zsep, usrWeights, rad, pinData=None):
+def buildreverse(d_across_pinbase, baseEdges, filename, SOBPwidth, range,
+                 steps, tolerance, zsep, usrWeights, rad, pinData=None):
 
     if not filename:
         filename = sys.argv[1]
@@ -205,7 +205,7 @@ def buildreverse(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     # make air box around hedgehog
     hbox_thick = 2
     # move everything to the correct z location
-    #new_zero = 35.67 + 0.05
+
     new_zero = 30.59 - 0.05 - hbox_thick
 
     hb1 = pyg4ometry.geant4.solid.Box("hb1", baseEdges, baseEdges,
@@ -217,9 +217,23 @@ def buildreverse(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
                        [0, 0, (new_zero + (hbox_thick/2))*10],
                        hb1_l, "hb1_p", wl, reg)
 
+    # trapezoid base
+    baseWidth = baseEdges + 1
+
+    shortCoord = (baseWidth/2 - baseThickness) * 10
+    longCoord = (baseWidth/2) * 10
+
     # create the base object
-    b1 = pyg4ometry.geant4.solid.Box("b1", baseEdges, baseEdges,
-                                     baseThickness, reg, lunit="cm")
+    b1 = pyg4ometry.geant4.solid.GenericTrap("b1", shortCoord, shortCoord,
+                                             shortCoord, -shortCoord,
+                                             -shortCoord, -shortCoord,
+                                             -shortCoord, shortCoord,
+                                             longCoord, longCoord,
+                                             longCoord, -longCoord,
+                                             -longCoord, -longCoord,
+                                             -longCoord, longCoord,
+                                             baseThickness * 5, reg,
+                                             lunit="cm")
     b1_l = pyg4ometry.geant4.LogicalVolume(b1, "G4_Fe", "b1_l", reg,
                                            lunit="cm")
     pyg4ometry.geant4.PhysicalVolume([0, 0, 0],
