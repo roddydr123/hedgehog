@@ -76,7 +76,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     # make air box around hedgehog
     hbox_thick = 2
     # move everything to the correct z location
-    new_zero = 35.67 + 0.05
+    new_zero = 13.6 + 0.05
 
     hb1 = pyg4ometry.geant4.solid.Box("hb1", baseEdges, baseEdges,
                                       hbox_thick, reg, lunit="cm")
@@ -131,13 +131,13 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
         else:
             usingArrY = adj_pinLocArrY
 
-        xrow = xrow + 1
+        xrow += 1
 
         # the factor of 10 is there to correct the units, there are a few
         # rogue factors of 10 around to account for this.
         for j, y in enumerate(np.round(usingArrY, 5) * 10):
 
-            count = count + 1
+            count += 1
 
             # shift pin up by correct amount (NOT IMPLEMENTED)
             # BshiftX = 0  # baseQuad((x + d_across_pinbase/2) / 10)

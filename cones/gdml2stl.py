@@ -50,7 +50,7 @@ def convert(filename=None):
     for kv, kp in dualDict:
         # don't include the world volume and the water phantom in the
         # hedgehog geometry.
-        if (kv != 'wl') & (kv != 'wa1_l'):
+        if (kv != 'wl') & (kv != 'wa1_l') & (kv != 'hb1_l'):
             lv = reg.logicalVolumeDict[kv]
             pv = reg.physicalVolumeDict[kp]
 

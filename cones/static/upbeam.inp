@@ -491,7 +491,7 @@ RPP bSRAM59    -1.3025 1.3025 -2.229 -1.629 153.25 153.26
 RPP bSRAM60    -1.3025 1.3025 -1.515 -0.912 153.25 153.26
 RPP bwaterbx   -12. 8. -2.5 2.5 50.1 70.1
 * replacing the hedgehog in the geometry
-RPP bPMMA      -2.5 2.5 -2.5 2.5 13.6 13.65
+RPP bPMMA      -2.5 2.5 -2.5 2.5 13.6 13.7
 END
 rFloor       5 +bFloor
 * Reg # 1
