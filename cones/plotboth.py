@@ -20,7 +20,9 @@ def sobp():
     #filenames = ["Simulation result", "Wide pins (7mm)", "Medium pins (5mm)", "Thin pins (3mm)"]
     #filenames = ["Predicted by optimizer", "Simulation result"]
 
-    fig, ax = plt.subplots(figsize=(11.8, 5))
+    fig, ax = plt.subplots(figsize=(13, 5))
+
+    #ax1 = ax.twinx()
 
     for i, sobp in enumerate(dataArr):
 
@@ -36,10 +38,27 @@ def sobp():
         slice = (sobp[0] >= 3.2) & (sobp[0] <= 3.8)
         sobp[1] /= np.average(sobp[1][slice])
 
+        #if i == 0:
+        #    ax.plot(sobp[0], sobp[1], label=filenames[i], color="k")
+        #    #ax1.plot(sobp[0], sobp[1], label=filenames[i], color="k")
+        #else:
+        #    ax.plot(sobp[0], sobp[1], label=filenames[i], linestyle="dashed", color="k")
+
+        ax.plot(sobp[0], sobp[1], label=filenames[i])
+
     ax.legend()
+    #ax1.legend()
     ax.set_xlabel("Depth in water (cm)")
-    ax.set_ylabel("Normalised dose (D_pl)")
+    ax.set_ylabel("Normalised dose")
+    #ax.set_ylabel("Normalised pixel value (films)")
     ax.set_xlim(0, 5)
+
+    ax.set_ylim(-0.1, 1.1)
+    #ax1.set_ylim(-0.1, 1.1)
+
+    ax.xaxis.set_tick_params(length=6, width=2)
+    ax.yaxis.set_tick_params(length=6, width=2)
+    #ax1.yaxis.set_tick_params(length=6, width=2)
 
     plt.tight_layout()
 
