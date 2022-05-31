@@ -65,7 +65,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     radii = radii[nslice]
     thicknesses = thicknesses[nslice]
 
-    # make the base at origin, get the original thickness just larger
+    # get the original thickness just larger
     # than the largest after the slicing above
     baseIndex = np.where(pinData["thicknesses"] == thicknesses[0])[0][-1]
     baseThickness = pinData["thicknesses"][baseIndex - 1]
@@ -80,7 +80,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
 
     hb1 = pyg4ometry.geant4.solid.Box("hb1", baseEdges, baseEdges,
                                       hbox_thick, reg, lunit="cm")
-    hb1_l = pyg4ometry.geant4.LogicalVolume(hb1, "G4_Fe", "hb1_l", reg,
+    hb1_l = pyg4ometry.geant4.LogicalVolume(hb1, "G4_AIR", "hb1_l", reg,
                                             lunit="cm")
     pyg4ometry.geant4.\
         PhysicalVolume([0, 0, 0],
@@ -94,10 +94,10 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     longCoord = (baseWidth/2) * 10
 
     # create the base object
-    b1 = pyg4ometry.geant4.solid.GenericTrap("b1", shortCoord, shortCoord,
-                                             shortCoord, -shortCoord,
-                                             -shortCoord, -shortCoord,
-                                             -shortCoord, shortCoord,
+    b1 = pyg4ometry.geant4.solid.GenericTrap("b1", shortCoord, longCoord,
+                                             shortCoord, -longCoord,
+                                             -longCoord, -longCoord,
+                                             -longCoord, longCoord,
                                              longCoord, longCoord,
                                              longCoord, -longCoord,
                                              -longCoord, -longCoord,
