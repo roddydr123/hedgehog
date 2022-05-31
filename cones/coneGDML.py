@@ -87,9 +87,23 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
                        [0, 0, (new_zero + (hbox_thick/2))*10],
                        hb1_l, "hb1_p", wl, reg)
 
+    # trapezoid base
+    baseWidth = baseEdges + 1
+
+    shortCoord = (baseWidth/2 - baseThickness) * 10
+    longCoord = (baseWidth/2) * 10
+
     # create the base object
-    b1 = pyg4ometry.geant4.solid.Box("b1", baseEdges, baseEdges,
-                                     baseThickness, reg, lunit="cm")
+    b1 = pyg4ometry.geant4.solid.GenericTrap("b1", shortCoord, shortCoord,
+                                             shortCoord, -shortCoord,
+                                             -shortCoord, -shortCoord,
+                                             -shortCoord, shortCoord,
+                                             longCoord, longCoord,
+                                             longCoord, -longCoord,
+                                             -longCoord, -longCoord,
+                                             -longCoord, longCoord,
+                                             baseThickness * 5, reg,
+                                             lunit="cm")
     b1_l = pyg4ometry.geant4.LogicalVolume(b1, "G4_Fe", "b1_l", reg,
                                            lunit="cm")
     pyg4ometry.geant4.PhysicalVolume([0, 0, 0],
