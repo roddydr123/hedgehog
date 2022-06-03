@@ -1,9 +1,9 @@
 from hedgehog import hedgehog
 
 
-h = hedgehog(1, 4, 9, "test", d_across_pinbase=0.7)
+h = hedgehog(1.8, 4, 16, "dataset4-test", usrWeights=[800, 15E2, 15E2])
 
-# h.viewDetails()
-h.generateGDML(5, 1.5)
-#h.gdml2f()
-h.gdml2stl()
+#h.viewDetails()
+h.generateGDML(5, 1.3)
+h.gdml2f()
+#h.gdml2stl()

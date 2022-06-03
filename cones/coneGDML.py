@@ -78,7 +78,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     # move everything to the correct z location
     new_zero = 13.6 + 0.05
 
-    hb1 = pyg4ometry.geant4.solid.Box("hb1", baseEdges, baseEdges,
+    hb1 = pyg4ometry.geant4.solid.Box("hb1", 9, 9,
                                       hbox_thick, reg, lunit="cm")
     hb1_l = pyg4ometry.geant4.LogicalVolume(hb1, "G4_AIR", "hb1_l", reg,
                                             lunit="cm")
@@ -88,7 +88,10 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
                        hb1_l, "hb1_p", wl, reg)
 
     # trapezoid base
-    baseWidth = baseEdges + 1
+    baseWidth = baseEdges
+
+    # extra base area for attaching to mount (cm)
+    extra = 1 * 10
 
     shortCoord = (baseWidth/2 - baseThickness) * 10
     longCoord = (baseWidth/2) * 10
@@ -96,12 +99,12 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     # create the base object
     b1 = pyg4ometry.geant4.solid.GenericTrap("b1", shortCoord, longCoord,
                                              shortCoord, -longCoord,
-                                             -longCoord, -longCoord,
-                                             -longCoord, longCoord,
+                                             -longCoord - extra, -longCoord,
+                                             -longCoord - extra, longCoord,
                                              longCoord, longCoord,
                                              longCoord, -longCoord,
-                                             -longCoord, -longCoord,
-                                             -longCoord, longCoord,
+                                             -longCoord - extra, -longCoord,
+                                             -longCoord - extra, longCoord,
                                              baseThickness * 5, reg,
                                              lunit="cm")
     b1_l = pyg4ometry.geant4.LogicalVolume(b1, "G4_Fe", "b1_l", reg,
