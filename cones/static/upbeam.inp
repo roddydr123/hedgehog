@@ -1,8 +1,8 @@
 TITLE
-underlying simulations for hedgehog creation for June 11 2022
+template for hedgehog testing for June 11 2022
 GLOBAL         1000.       0.0       0.0       0.0        1.
 DEFAULTS                                                              PRECISIO
-RANDOMIZ          1.716994272.
+RANDOMIZ          1.717994272.
 GEOBEGIN                                                              COMBNAME
     0    0          
 * bSlab2
@@ -490,9 +490,7 @@ RPP bSRAM58    -1.3025 1.3025 -2.943 -2.343 153.25 153.26
 RPP bSRAM59    -1.3025 1.3025 -2.229 -1.629 153.25 153.26
 RPP bSRAM60    -1.3025 1.3025 -1.515 -0.912 153.25 153.26
 RPP bwaterbx   -12. 8. -2.5 2.5 50.1 70.1
-* replacing the hedgehog in the geometry
-RPP bPMMA      -2.5 2.5 -2.5 2.5 13.6 13.65
-END
+* Geometry gets spliced in here (and regions)
 rFloor       5 +bFloor
 * Reg # 1
 * BlkHole; assigned material: Blackhole; mat # (1)
@@ -572,7 +570,7 @@ rOutAir      5 +ioncsbx +bioninse
                -bSRAM26 -bSRAM27 -bSRAM28 -bSRAM29 -bSRAM30 -bSRAM31 -bSRAM32 -bSRAM33 -bSRAM34 -bSRAM35 -bSRAM36 
                -bSRAM37 -bSRAM38 -bSRAM39 -bSRAM40 -bSRAM41 -bSRAM42 -bSRAM43 -bSRAM44 -bSRAM45 -bSRAM46 -bSRAM47 
                -bSRAM48 -bSRAM49 -bSRAM50 -bSRAM51 -bSRAM52 -bSRAM53 -bSRAM54 -bSRAM55 -bSRAM56 -bSRAM57 -bSRAM58 
-               -bSRAM59 -bSRAM60 -bBrIrCoD -bBrIrCoI -bwaterbx -bPMMA
+               -bSRAM59 -bSRAM60 -bBrIrCoD -bBrIrCoI -bwaterbx -B000201
                | +rngHole +rngshift
 * Reg # 11
 * rMaIon1; assigned material: Aluminium; mat # (10)
@@ -811,7 +809,6 @@ rBrIrCoD     5 +bBrIrCoD -bBrIrCoI
                | +(+bBrCoZ2 -bBrCoZ1 +bBrCoX2 -bBrCoX1 +bBrCoY2 -bBrCoY1) -bBrIrCoI
 rBrIrCoI     5 +bBrIrCoI
 rwaterbx     5 +bwaterbx
-rPMMA        5 +bPMMA
 END
 GEOEND
 !@what.2=-dT2dp(74*MeV, 1*MeV, Mp)
@@ -1028,7 +1025,6 @@ ASSIGNMA         AIR  rBrIrCoI
 LOW-NEUT
 ASSIGNMA         AIR    rSRAM4
 ASSIGNMA       WATER  rwaterbx
-ASSIGNMA        PMMA     rPMMA
 * everything else spliced in here
 FIXED
 USRBIN           10.      DOSE      -21.       0.3       0.3      55.1wbox1

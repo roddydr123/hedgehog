@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import weightsCone as wc
 from SOBPwidth import getwidth
-from weightsCone import path
+from private.private import path
 
 waterEquiv = 1.158
 
@@ -21,6 +21,9 @@ def getSimData(zsep):
         settings = [zsep, "using dataset 3", 17, "expt", [0.1, 0.19, 0.29,
                     0.38, 0.47, 0.57, 0.66, 0.75, 0.85, 0.94, 1.03, 1.13,
                     1.22, 1.31, 1.41, 1.5]]
+        settings = [zsep, "using dataset 4", 22, "fullblock", [0.1, 0.19, 0.29,
+                    0.38, 0.47, 0.57, 0.66, 0.75, 0.85, 0.94, 1.03, 1.13,
+                    1.22, 1.31, 1.41, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]]
     else:
         settings = [zsep, "using dataset 1", 22, "data", [0.05, 0.13, 0.2,
                     0.27, 0.3, 0.33, 0.4, 0.47, 0.53, 0.6, 0.67, 0.73, 0.8,
@@ -33,7 +36,8 @@ def getSimData(zsep):
         data = np.genfromtxt(f'matrix/{settings[3]}{number}.txt',
                              skip_header=1)
         dose = data[:, 2]
-        depth = data[:, 0] - zsep
+        # make depth start at zero
+        depth = data[:, 0] - data[0, 0]
         doses.append(dose)
         # store the depth of each peak
         peaks.append(depth[dose.argmax()])
@@ -91,11 +95,22 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
     # make the full thickness profile W(T)
     density = 100
     dense_thicknesses = np.linspace(thicknesses[0], thicknesses[-1], density)
-    interp_weights = interpolate.UnivariateSpline(thicknesses, weights, s=0)
+    interp_weights = interpolate.UnivariateSpline(thicknesses, weights, s=0, k=3)
     dense_weights = interp_weights(dense_thicknesses)
 
     # set any negative weights to zero as they're unphysical
     dense_weights = np.where(dense_weights > 0, dense_weights, 0)
+
+    # set any weights after the first zero to zero, as an artefact of cubic
+    # splines can make extra bumps in the weights profile. Cut in half to
+    # not include leading zeros.
+    half = dense_weights[int(len(dense_weights) / 2):][::-1]
+    try:
+        zero_index = np.where(half == 0)[0][-1] + 1
+        dense_weights[-zero_index:] = 0
+    except IndexError:
+        # sometimes there are no zeros...
+        pass
 
     # now find the depth-dose profile (BP) for each thickness by interpolation
     # we don't interpolate along the depth-dose profile at the moment, could

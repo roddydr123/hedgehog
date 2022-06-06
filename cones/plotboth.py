@@ -1,7 +1,7 @@
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from weightsCone import path
+from private.private import path
 
 
 plt.style.use('/mnt/c/users/david/documents/triumf/poster/poster.mplstyle')

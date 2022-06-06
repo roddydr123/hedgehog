@@ -1,7 +1,7 @@
 import pyg4ometry
 import sys
 import vtk as _vtk
-from weightsCone import path
+from private.private import path
 
 
 def writeVtkPolyDataAsSTLFile(fileName, meshes):
@@ -49,8 +49,9 @@ def convert(filename=None):
     print("meshing...")
     for kv, kp in dualDict:
         # don't include the world volume and the water phantom in the
-        # hedgehog geometry.
-        if (kv != 'wl') & (kv != 'wa1_l'):
+        # hedgehog geometry (and the box base for FLUKA).
+        forbidden_lvs = ['wl', 'hb1_l', 'nb1_l']
+        if kv not in forbidden_lvs:
             lv = reg.logicalVolumeDict[kv]
             pv = reg.physicalVolumeDict[kp]
 
