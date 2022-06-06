@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import weightsCone as wc
 from SOBPwidth import getwidth
-from weightsCone import path
+from private.private import path
 
 waterEquiv = 1.158
 

@@ -1,7 +1,7 @@
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-from coneGDML import path
+from private.private import path
 
 
 def main():

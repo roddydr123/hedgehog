@@ -1,6 +1,6 @@
 import numpy as np
 import sys
-from weightsCone import path
+from private.private import path
 
 
 def main():
