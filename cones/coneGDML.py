@@ -2,7 +2,7 @@ import pyg4ometry
 import numpy as np
 import sys
 from cubic import optimizer
-from weightsCone import path
+from private.private import path
 
 
 def baseQuad(x):
@@ -74,7 +74,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     thicknesses -= thicknesses[0]
 
     # make air box around hedgehog
-    hbox_thick = 2
+    hbox_thick = thicknesses.max() + 0.5
     # move everything to the correct z location
     new_zero = 13.6 + 0.05
 
@@ -87,16 +87,13 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
                        [0, 0, (new_zero + (hbox_thick/2))*10],
                        hb1_l, "hb1_p", wl, reg)
 
-    # trapezoid base
-    baseWidth = baseEdges
-
     # extra base area for attaching to mount (cm)
     extra = 1 * 10
 
-    shortCoord = (baseWidth/2 - baseThickness) * 10
-    longCoord = (baseWidth/2) * 10
+    shortCoord = (baseEdges/2 - baseThickness) * 10
+    longCoord = (baseEdges/2) * 10
 
-    # create the base object
+    # create the base object with planes for STL conversion
     b1 = pyg4ometry.geant4.solid.GenericTrap("b1", shortCoord, longCoord,
                                              shortCoord, -longCoord,
                                              -longCoord - extra, -longCoord,
@@ -113,6 +110,16 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
                                      [0, 0, (baseThickness/2 -
                                              hbox_thick/2)*10],
                                      b1_l, "b1_p", hb1_l, reg)
+
+    # base with no planes for FLUKA
+    nb1 = pyg4ometry.geant4.solid.Box("nb1", baseEdges, baseEdges,
+                                      baseThickness, reg, lunit="cm")
+    nb1_l = pyg4ometry.geant4.LogicalVolume(nb1, "G4_Fe", "nb1_l", reg,
+                                            lunit="cm")
+    pyg4ometry.geant4.PhysicalVolume([0, 0, 0],
+                                     [0, 0, (baseThickness/2 -
+                                             hbox_thick/2)*10],
+                                     nb1_l, "nb1_p", hb1_l, reg)
 
     rot = np.zeros_like(pinData["radii"])
 

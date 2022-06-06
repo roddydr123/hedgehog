@@ -1,7 +1,7 @@
 import pyg4ometry
 import sys
 import re
-from coneGDML import path
+from private.private import path
 
 
 def convert(zsep, file=None):
@@ -12,6 +12,13 @@ def convert(zsep, file=None):
 
     reader = pyg4ometry.gdml.Reader(f"{path}files/{file}.gdml")
     world = reader.getRegistry().getWorldVolume()
+
+    # there's two hedgehog bases in the GDML file because fluka cant deal
+    # with the way the pyg4ometry converter handles trapezoids, so one base
+    # needs to be removed before conversion. Since the banked base is the
+    # first one to be made in coneGDML.py, this is [0] in the list below.
+    # many wills to live died writing this line.
+    del world.daughterVolumes[0].logicalVolume.daughterVolumes[0]
 
     # do the conversion to fluka geometry
     print("converting...")
@@ -24,9 +31,10 @@ def convert(zsep, file=None):
 
     for key in freg.regionDict:
         region = freg.regionDict[key]
-        if checkRegion(key) == 0:
+        check = checkRegion(key)
+        if check == 0:
             toDel.append(key)
-        elif key == "R0002":
+        elif check == 1:
             freg.assignma("AIR", region)
         else:
             freg.assignma("PMMA", region)
@@ -48,15 +56,17 @@ def checkRegion(key):
         return 0
     elif key == "BLKHOLE":
         return 0
-    else:
+    elif key == "R0002":
         return 1
+    else:
+        return 400
 
 
 def addToTemplate(filename, zsep):
 
     # choose the template based on z separation
     if zsep == 36.5:
-        #template = open("static/beamline.inp", "r")
+        # template = open("static/beamline.inp", "r")
         template = open("static/upbeam.inp", "r")
 
         # template = open("static/reverse.inp", "r") for reverse hedgehog
