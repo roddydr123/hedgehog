@@ -66,11 +66,15 @@ def genInitGuess(SOBPwidth, range, steps, d_across_pinbase, peaks=None,
     # finding the base thickness as the thickness which will
     # results in a peak at the range point
     peak_interp = interpolate.UnivariateSpline(peaks[::-1],
-                                               thicknesses[::-1], s=0)
+                                               thicknesses[::-1], s=0,
+                                               ext=1)
     base_thickness = peak_interp(desired[0])
+    if base_thickness == 0.0:
+        raise ValueError("Your desired SOBP is outwith the range of the \
+                         underlying simulations. Please reduce the range.")
 
     # add zero weight thicknesses either end of the pin for opt to play with
-    padding_zeros = 2
+    padding_zeros = 1
     base_thickness -= (padding_zeros * height)
     extra_weights = [0.0] * padding_zeros
     weights = np.append(weights, extra_weights)
@@ -95,7 +99,7 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
     # make the full thickness profile W(T)
     density = 100
     dense_thicknesses = np.linspace(thicknesses[0], thicknesses[-1], density)
-    interp_weights = interpolate.UnivariateSpline(thicknesses, weights, s=0, k=3)
+    interp_weights = interpolate.UnivariateSpline(thicknesses, weights, s=0)
     dense_weights = interp_weights(dense_thicknesses)
 
     # set any negative weights to zero as they're unphysical
