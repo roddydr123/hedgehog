@@ -1,7 +1,7 @@
 from hedgehog import hedgehog
 
 
-h = hedgehog(0.5, 4.0, 4, "hedgehogJ1", tolerance=1E-4)
+h = hedgehog(1, 4.0, 9, "comp09-replicate", usrWeights=[4000, 15E2, 45E2])
 
 h.viewDetails()
 #h.generateGDML(5, 2.3)

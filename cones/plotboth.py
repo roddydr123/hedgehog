@@ -20,9 +20,10 @@ def sobp():
     #filenames = ["Simulation result", "Wide pins (7mm)", "Medium pins (5mm)", "Thin pins (3mm)"]
     #filenames = ["Predicted by optimizer", "Simulation result"]
 
-    fig, ax = plt.subplots(figsize=(13, 5))
+    fig, ax = plt.subplots()
 
     #ax1 = ax.twinx()
+    low, high = input("please input the range for normalisation: ").split(' ')
 
     for i, sobp in enumerate(dataArr):
 
@@ -35,7 +36,7 @@ def sobp():
             sobp[0] /= 10
 
         # proper normalisation
-        slice = (sobp[0] >= 3.2) & (sobp[0] <= 3.8)
+        slice = (sobp[0] >= float(low)) & (sobp[0] <= float(high))
         sobp[1] /= np.average(sobp[1][slice])
 
         #if i == 0:

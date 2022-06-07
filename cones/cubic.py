@@ -21,9 +21,10 @@ def getSimData(zsep):
         settings = [zsep, "using dataset 3", 17, "expt", [0.1, 0.19, 0.29,
                     0.38, 0.47, 0.57, 0.66, 0.75, 0.85, 0.94, 1.03, 1.13,
                     1.22, 1.31, 1.41, 1.5]]
-        settings = [zsep, "using dataset 4", 22, "fullblock", [0.1, 0.19, 0.29,
+        settings = [zsep, "using dataset 4", 30, "fullblock", [0.1, 0.19, 0.29,
                     0.38, 0.47, 0.57, 0.66, 0.75, 0.85, 0.94, 1.03, 1.13,
-                    1.22, 1.31, 1.41, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]]
+                    1.22, 1.31, 1.41, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2,
+                    2.3, 2.4, 2.5, 2.6, 2.7, 2.8]]
     else:
         settings = [zsep, "using dataset 1", 22, "data", [0.05, 0.13, 0.2,
                     0.27, 0.3, 0.33, 0.4, 0.47, 0.53, 0.6, 0.67, 0.73, 0.8,
@@ -109,7 +110,8 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
     dense_weights = np.where(dense_weights > 0, dense_weights, 0)
 
     # set any weights for thicknesses less than the base to zero
-    dense_weights = np.where(dense_thicknesses > 0, dense_weights, 0)
+    dense_weights = np.where(dense_thicknesses > base_thickness,
+                             dense_weights, 0)
 
     # set any weights after the first zero to zero, as an artefact of cubic
     # splines can make extra bumps in the weights profile. Cut in half to
