@@ -175,7 +175,7 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
         # show a plot of the weights profile
         ax3 = fig.add_subplot(224)
         ax3.plot(dense_thicknesses, dense_weights)
-        ax3.scatter(thicknesses, weights)
+        ax3.scatter(thicknesses[:-2], weights[:-2])
         ax3.set_xlabel("Thickness (cm)")
         ax3.set_ylabel("Weight")
 
