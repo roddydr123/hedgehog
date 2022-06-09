@@ -101,7 +101,7 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
     using the interpolated matrix.
     """
     # make the full thickness profile W(T)
-    density = len(thicknesses) * 3
+    density = 100 #len(thicknesses) * 3
     dense_thicknesses = np.linspace(thicknesses[0], thicknesses[-1], density)
     interp_weights = interpolate.UnivariateSpline(thicknesses, weights, s=0)
     dense_weights = interp_weights(dense_thicknesses)
@@ -174,7 +174,7 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
 
         # show a plot of the weights profile
         ax3 = fig.add_subplot(224)
-        ax3.scatter(dense_thicknesses, dense_weights, s=2)
+        ax3.plot(dense_thicknesses, dense_weights)
         ax3.scatter(thicknesses[:-2], weights[:-2], s=2, color='k')
         ax3.set_xlabel("Thickness (cm)")
         ax3.set_ylabel("Weight")
