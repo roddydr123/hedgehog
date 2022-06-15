@@ -2,6 +2,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 from private.private import path
+import pandas as pd
 
 
 plt.style.use('/mnt/c/users/david/documents/triumf/poster/poster.mplstyle')
@@ -39,13 +40,14 @@ def sobp():
         slice = (sobp[0] >= float(low)) & (sobp[0] <= float(high))
         sobp[1] /= np.average(sobp[1][slice])
 
-        #if i == 0:
-        #    ax.plot(sobp[0], sobp[1], label=filenames[i], color="k")
+        if i == 0:
+            ax.plot(sobp[0], sobp[1], label=filenames[i], color="k")
         #    #ax1.plot(sobp[0], sobp[1], label=filenames[i], color="k")
-        #else:
-        #    ax.plot(sobp[0], sobp[1], label=filenames[i], linestyle="dashed", color="k")
+        else:
+            #ax.plot(sobp[0], sobp[1], label=filenames[i], linestyle="dashed", color="k")
+            ax.plot(sobp[0], sobp[1], label=filenames[i])
 
-        ax.plot(sobp[0], sobp[1], label=filenames[i])
+        #ax.plot(sobp[0], sobp[1], label=filenames[i])
 
     ax.legend()
     #ax1.legend()
@@ -116,6 +118,10 @@ def loader(filename):
 
     elif filename[-3:] == "npz":
         data = np.load(f'{path}data/{filename}')["depth_dose_sobp"]
+
+    elif filename[-3:] == "csv":
+        file = pd.read_csv(f'{path}film-scans/editing/{filename}', sep=",", names=["x", "calib", "uncalib"])
+        data = [file["x"], file["calib"]]
 
     else:
         raise TypeError("Invalid filename or type")
