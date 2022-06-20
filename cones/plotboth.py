@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from private.private import path
 import pandas as pd
+from scipy.integrate import simpson
 
 
 plt.style.use('/mnt/c/users/david/documents/triumf/poster/poster.mplstyle')
@@ -24,21 +25,32 @@ def sobp():
     fig, ax = plt.subplots()
 
     #ax1 = ax.twinx()
-    low, high = input("please input the range for normalisation: ").split(' ')
+    #low, high = input("please input the range for normalisation: ").split(' ')
 
     for i, sobp in enumerate(dataArr):
 
+        # scale in x due to slabs angle
+        diff = 0.5
+        # angle = np.degrees(np.arctan(diff / 20))
+        hyp = np.sqrt(diff**2 + 20**2)
+        scaler = hyp / 20
+        if "film" in filenames[i]:
+            thresh = 0.4
+            sobp[0] *= scaler
+        else:
+            thresh = 0.1
+
         # move them so they start at zero on x axis
-        a = np.argmax(sobp[1] > 0.4 * sobp[1].max())
+        a = np.argmax(sobp[1] > thresh * sobp[1].max())
         sobp[0] -= sobp[0][a]
 
         # change units if needed
         if sobp[0][-1] > 10:
             sobp[0] /= 10
 
-        # proper normalisation
-        slice = (sobp[0] >= float(low)) & (sobp[0] <= float(high))
-        sobp[1] /= np.average(sobp[1][slice])
+        # proper proper normalisation
+        area = simpson(sobp[1], sobp[0])
+        sobp[1] /= area
 
         if i == 0:
             ax.plot(sobp[0], sobp[1], label=filenames[i], color="k")
@@ -56,7 +68,7 @@ def sobp():
     #ax.set_ylabel("Normalised pixel value (films)")
     ax.set_xlim(0, 5)
 
-    ax.set_ylim(-0.1, 1.1)
+    #ax.set_ylim(-0.1, 1.1)
     #ax1.set_ylim(-0.1, 1.1)
 
     ax.xaxis.set_tick_params(length=6, width=2)
@@ -77,6 +89,9 @@ def profile():
         dataArr.append(np.array(loader(file)))
         filenames.append(file)
 
+    filenames = ["Reverse J2", "J2", "J5", "No HEDGEHOG"]
+    lines = ["solid", "dotted", "dashed", "dashdot"]
+
     fig, ax = plt.subplots()
 
     for i, profile in enumerate(dataArr):
@@ -87,15 +102,17 @@ def profile():
         # centre the peak on zero
         profile[0] -= profile[0][np.argmax(profile[1])]
 
-        # proper normalisation
-        #slice = (profile[0] >= -0.2) & (profile[0] <= 0.2)
-        #profile[1] /= np.average(profile[1][slice])
-        profile[1] /= profile[1].max()
+        area = simpson(profile[1], profile[0])
+        profile[1] /= area
 
-        ax.plot(profile[0], profile[1], label=str(filenames[i]))
+        # find >99%
+        slice = profile[1] >= 0.95 * profile[1].max()
+        print(profile[0][slice][-1] - profile[0][slice][0])
+
+        ax.plot(profile[0], profile[1], label=str(filenames[i]), color="k", linestyle=lines[i])
 
     ax.legend()
-    ax.set_xlabel("Distance across beamspot (cm)")
+    ax.set_xlabel("Distance from maximum (cm)")
     ax.set_ylabel("Normalised dose")
 
     plt.show()
