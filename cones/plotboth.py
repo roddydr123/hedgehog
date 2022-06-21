@@ -14,7 +14,7 @@ def sobp():
     dataArr = []
     filenames = []
 
-    lines = ["k-", "r-", "g-", "k--"]
+    lines = ["k-", "r-", "k--", "r--"]
 
     # load in all the files and store their names
     for file in sys.argv[1:]:
@@ -22,7 +22,7 @@ def sobp():
         filenames.append(file)
 
     fig, ax = plt.subplots()
-    filenamess = ["7mm", "5mm", "3mm", "Simulated"]
+    filenamess = ["Normal measured", "Reversed measured", "Normal simulated", "Reversed simulated"]
 
     measured_avgs = []
 
@@ -64,14 +64,16 @@ def sobp():
 
         measured_avgs.append(np.average(sobp[1][slice]))
 
-        if i == 3:
+        if i == 2:
             sobp[1] /= sobp[1].max() / measured_avgs[0]
+
+        if i == 3:
+            sobp[1] /= sobp[1].max() / measured_avgs[1]
 
         getwidth(sobp[0], sobp[1])
 
-        if i == 3:
-            #ax.plot(sobp[0], sobp[1], label=filenames[i], color="k")
-            ax.errorbar(sobp[0], sobp[1], yerr=sobp[2], label=filenames[i], color="k")
+        if i == 50:
+            ax.plot(sobp[0], sobp[1], label=filenames[i], color="k")
         #    #ax1.plot(sobp[0], sobp[1], label=filenames[i], color="k")
         else:
             #ax.plot(sobp[0], sobp[1], label=filenames[i], linestyle="dashed", color="k")
@@ -83,7 +85,7 @@ def sobp():
     ax.set_ylabel("Dose (Gy)")
     ax.set_xlim(0, 5)
 
-    ax.set_ylim(0.0, 15)
+    #ax.set_ylim(-0.1, 1.1)
 
     ax.xaxis.set_tick_params(length=6, width=2)
     ax.yaxis.set_tick_params(length=6, width=2)
@@ -141,7 +143,7 @@ def loader(filename):
         sim_array = np.genfromtxt(f'{path}data/{filename}', skip_header=1)
 
         if sim_array.shape[1] != 2:
-            data = [sim_array[:, 0], sim_array[:, 2], sim_array[:, 3]]
+            data = [sim_array[:, 0], sim_array[:, 2]]
 
         else:
             data = sim_array.T
