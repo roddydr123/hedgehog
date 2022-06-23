@@ -7,14 +7,15 @@ from scipy.integrate import simpson
 from SOBPwidth import getwidth
 
 
-plt.style.use('/mnt/c/users/david/documents/triumf/poster/poster.mplstyle')
+plt.style.use('/mnt/c/users/david/documents/triumf/thesis/thesis.mplstyle')
 
 
 def sobp():
     dataArr = []
     filenames = []
 
-    lines = ["k-", "r-", "k--", "r--"]
+    lines = ["C0-", "C1-", "C2-", "C3-"]
+    clr = ["C0", "C1", "C2", "C3"]
 
     # load in all the files and store their names
     for file in sys.argv[1:]:
@@ -22,13 +23,15 @@ def sobp():
         filenames.append(file)
 
     fig, ax = plt.subplots()
-    filenamess = ["Normal measured", "Reversed measured", "Normal simulated", "Reversed simulated"]
+    filenamess = ["240K", "1.2M", "12M", "Optimized"]
 
     measured_avgs = []
+    areas = []
 
     low = 2.7
     high = 3.5
     #low, high = input("please input the range for normalisation: ").split(' ')
+    #ax1 = ax.twinx()
 
     for i, sobp in enumerate(dataArr):
 
@@ -43,7 +46,7 @@ def sobp():
         scaler = hyp / 20
 
         if ".csv" in filenames[i]:
-            thresh = 0.4
+            thresh = 0.2
             sobp[0] *= scaler
             sobp[0] /= 10
         else:
@@ -59,36 +62,36 @@ def sobp():
         slice = (sobp[0] >= float(low)) & (sobp[0] <= float(high))
 
         # normalisation not great for films
-        # area = simpson(sobp[1], sobp[0])
-        # sobp[1] /= area
+        area = simpson(sobp[1], sobp[0])
+        sobp[1] /= area
 
         measured_avgs.append(np.average(sobp[1][slice]))
+        #areas.append(area)
+        yerr = 0
 
-        if i == 2:
-            sobp[1] /= sobp[1].max() / measured_avgs[0]
+        if i >= 50:
+            sobp[1] /= sobp[1].max() / measured_avgs[0] #* 0.35
+            #sobp[1] /= areas[1] / areas[0]
 
-        if i == 3:
-            sobp[1] /= sobp[1].max() / measured_avgs[1]
+        if i < 3:
+            #sobp[1] /= sobp[1].max() / measured_avgs[0]
+            yerr = sobp[2] * sobp[1] / 100
 
-        getwidth(sobp[0], sobp[1])
+        ax.fill_between(sobp[0], sobp[1] - yerr, sobp[1] + yerr, facecolor=clr[i], alpha=0.5)
 
-        if i == 50:
-            ax.plot(sobp[0], sobp[1], label=filenames[i], color="k")
-        #    #ax1.plot(sobp[0], sobp[1], label=filenames[i], color="k")
-        else:
-            #ax.plot(sobp[0], sobp[1], label=filenames[i], linestyle="dashed", color="k")
-            ax.plot(sobp[0], sobp[1], lines[i], label=filenamess[i])
-        #ax.plot(sobp[0], sobp[1], label=filenames[i])
+        #getwidth(sobp[0], sobp[1])
+        #ax.errorbar(sobp[0], sobp[1], yerr=yerr, label=filenamess[i])
+        ax.plot(sobp[0], sobp[1], label=filenamess[i])
 
-    ax.legend()
+    ax.legend(frameon=False)
     ax.set_xlabel("Depth in water (cm)")
     ax.set_ylabel("Dose (Gy)")
     ax.set_xlim(0, 5)
 
     #ax.set_ylim(-0.1, 1.1)
 
-    ax.xaxis.set_tick_params(length=6, width=2)
-    ax.yaxis.set_tick_params(length=6, width=2)
+    #ax.xaxis.set_tick_params(length=6, width=2)
+    #ax.yaxis.set_tick_params(length=6, width=2)
 
     plt.tight_layout()
 
@@ -143,7 +146,7 @@ def loader(filename):
         sim_array = np.genfromtxt(f'{path}data/{filename}', skip_header=1)
 
         if sim_array.shape[1] != 2:
-            data = [sim_array[:, 0], sim_array[:, 2]]
+            data = [sim_array[:, 0], sim_array[:, 2], sim_array[:, 3]]
 
         else:
             data = sim_array.T
