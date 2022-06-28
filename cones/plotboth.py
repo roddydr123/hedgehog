@@ -14,7 +14,7 @@ def sobp():
     dataArr = []
     filenames = []
 
-    lines = ["C0-", "C1-", "C2-", "C3-"]
+    lines = ["C0-", "C1-", "C2-", "k:", "C4:", "C5:"]
     clr = ["C0", "C1", "C2", "C3"]
 
     # load in all the files and store their names
@@ -23,13 +23,13 @@ def sobp():
         filenames.append(file)
 
     fig, ax = plt.subplots()
-    filenamess = ["240K", "1.2M", "12M", "Optimized"]
+    filenamess = ["J1-1", "J3", "J5", "J1-1", "J3", "J5"]
 
     measured_avgs = []
     areas = []
 
-    low = 2.7
-    high = 3.5
+    #low = 2.7
+    #high = 3.5
     #low, high = input("please input the range for normalisation: ").split(' ')
     #ax1 = ax.twinx()
 
@@ -59,29 +59,30 @@ def sobp():
         # while sobp[1].max() > 20:
         #    sobp[1] /= 10
 
-        slice = (sobp[0] >= float(low)) & (sobp[0] <= float(high))
+        #slice = (sobp[0] >= float(low)) & (sobp[0] <= float(high))
 
         # normalisation not great for films
         area = simpson(sobp[1], sobp[0])
-        sobp[1] /= area
+        #sobp[1] /= area
+        # 5 cm in len(sobp[0])
+        # 1 cm = sobp[1][len(sobp[0] / 5)]
+        #sobp[1] /= sobp[1][int(len(sobp[0]) / 100)]
 
-        measured_avgs.append(np.average(sobp[1][slice]))
-        #areas.append(area)
-        yerr = 0
+        #measured_avgs.append(np.average(sobp[1][slice]))
+        areas.append(area)
+        #yerr = 0
 
-        if i >= 50:
-            sobp[1] /= sobp[1].max() / measured_avgs[0] #* 0.35
-            #sobp[1] /= areas[1] / areas[0]
-
-        if i < 3:
+        if i > 2:
             #sobp[1] /= sobp[1].max() / measured_avgs[0]
-            yerr = sobp[2] * sobp[1] / 100
+            #yerr = sobp[2] * sobp[1] / 100
+            #pass
+            sobp[1] /= area / areas[i-3]
 
-        ax.fill_between(sobp[0], sobp[1] - yerr, sobp[1] + yerr, facecolor=clr[i], alpha=0.5)
+        #ax.fill_between(sobp[0], sobp[1] - yerr, sobp[1] + yerr, facecolor=clr[i], alpha=0.5)
 
-        #getwidth(sobp[0], sobp[1])
+        getwidth(sobp[0], sobp[1])
         #ax.errorbar(sobp[0], sobp[1], yerr=yerr, label=filenamess[i])
-        ax.plot(sobp[0], sobp[1], label=filenamess[i])
+        ax.plot(sobp[0], sobp[1], lines[i], label=filenamess[i])
 
     ax.legend(frameon=False)
     ax.set_xlabel("Depth in water (cm)")
