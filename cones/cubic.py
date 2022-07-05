@@ -174,8 +174,8 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
 
         # show a plot of the weights profile
         ax3 = fig.add_subplot(224)
+        ax3.scatter(thicknesses[:-2], weights[:-2], s=7, color='k')
         ax3.plot(dense_thicknesses, dense_weights)
-        ax3.scatter(thicknesses[:-2], weights[:-2], s=2, color='k')
         ax3.set_xlabel("Thickness (cm)")
         ax3.set_ylabel("Weight")
 
@@ -271,6 +271,10 @@ def optimizer(SOBPwidth, range, steps, d_across_pinbase, tolerance, zsep,
                                        d_across_pinbase, show=show,
                                        desired=desired, filename=filename,
                                        base_thickness=base_thickness)
+
+    #with open(path+"minsum.txt", "a") as file:
+    #    file.write(str(res.fun)+"\n")
+    #    print(res.fun)
 
     return pinData
 
