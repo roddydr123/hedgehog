@@ -21,7 +21,7 @@ def getwidth(depths, energies, range=None, sobp_width=None):
     peakarray = depths[energies >= 0.9 * peak]
     width = peakarray[-1] - peakarray[0]
     # SOBP width and maximum dE/dx value.
-    print(f'SOBP width: {np.round(width * 10, 3)}mm, maximum: {peak}')
+    print(f'SOBP width: {np.round(width, 3)}cm, maximum: {peak}')
     # Entrance to peak ratio
     print(f'Entrance/peak: '
           f'{np.round(100 * np.average(energies[0:5]) / peak, 1)}%')
@@ -32,6 +32,8 @@ def getwidth(depths, energies, range=None, sobp_width=None):
     LowLimRemove = UpLimRemove[UpLimRemove[:, 1] > 0.1 * peak][:, 0]
     dropoff = LowLimRemove[-1] - LowLimRemove[0]
     print(f'90/10 dropoff takes {round(dropoff, 4)}cm')
+    print(f"90% distal point: {LowLimRemove[0]}")
+    print(f"10% distal point: {LowLimRemove[-1]}")
 
     if range:
         # increase range because fluka sobp starts at 1
