@@ -7,7 +7,7 @@ from cubic import optimizer
 class hedgehog():
 
     def __init__(self, SOBPwidth, range, steps, filename, d_across_pinbase=0.7,
-                 tolerance=1E-3, zsep=36.5, usrWeights=[1, 1, 1]):
+                 tolerance=1E-4, zsep=36.5, usrWeights=[1, 1, 1]):
         self.SOBPwidth = SOBPwidth
         self.range = range
         self.steps = steps
