@@ -1,0 +1,46 @@
+TITLE
+hedgehog filled template
+DEFAULTS                                                              PRECISIO
+IRRPROFI       1000.100000000.
+BEAM          -0.074                           0.5       0.5          PROTON
+BEAMPOS          0.0       0.0       -1.
+RADDECAY          1.                  3.               99999
+PHYSICS           1.                                                  COALESCE
+PHYSICS           3.                                                  EVAPORAT
+GEOBEGIN                                                              COMBNAME
+    0    0          
+RPP BLKBODY    -500000. 500000. -500000. 500000. -500000. 500000.
+* wl ws
+RPP B000001    -250000. 250000. -250000. 250000. -250000. 250000.
+* b1_p b1
+RPP block      -0.9 0.9 -0.9 0.9 -1. 0.214
+$start_transform T0003
+* wa1_p wa1
+RPP waterblo   -250. 250. -250. 250. -50. 50.
+$end_transform
+END
+* b1_p
+R0002        5 | +block
+* wa1_p
+R0003        5 | +waterblo
+BLKHOLE      5 | +BLKBODY -( +B000001)
+R0000        5 +B000001 -block -waterblo
+END
+GEOEND
+FREE
+* ..+....1....+....2....+....3....+....4....+....5....+....6....+....7....+...
+ASSIGNMA  , PMMA, R0002
+ASSIGNMA  , WATER, R0003
+ASSIGNMA  , BLCKHOLE, BLKHOLE
+ASSIGNMA  , AIR, R0000
+ROT-DEFI  , 2000., 0.0, 0.0, 0.0, 0.0, 51., T0003
+LOW-NEUT  , 260.
+DCYTIMES  , 180., 900., 3600., 60000., 600000., 0.0
+FIXED
+USRBIN           10.      DOSE      -21.      0.25      0.25        7.centDose
+USRBIN         -0.25     -0.25        1.        1.        1.     1200. &
+USRBIN           10.      DOSE      -21.     50.25     50.25        7.centDos1
+USRBIN        -50.25    -50.25        1.        1.        1.     1200. &
+RANDOMIZ          1.   123126.
+START          1000.
+STOP

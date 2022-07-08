@@ -14,8 +14,7 @@ def sobp():
     dataArr = []
     filenames = []
 
-    lines = ["C0-", "C1-", "C2-", "k:", "C4:", "C5:"]
-    clr = ["C0", "C1", "C2", "C3"]
+    lines = ["k-", "C0-", "k:", "C0:", "C4:", "C5:"]
 
     # load in all the files and store their names
     for file in sys.argv[1:]:
@@ -23,7 +22,7 @@ def sobp():
         filenames.append(file)
 
     fig, ax = plt.subplots()
-    filenamess = ["J1-1", "J3", "J5", "J1-1", "J3", "J5"]
+    filenamess = ["Normal measured", "Reverse measured", "Normal simulated", "Reverse simulated", "J3 simulated", "J5 simulated"]
 
     measured_avgs = []
     areas = []
@@ -64,6 +63,7 @@ def sobp():
         # normalisation not great for films
         area = simpson(sobp[1], sobp[0])
         #sobp[1] /= area
+        #sobp[1] /= sobp[1].max()
         # 5 cm in len(sobp[0])
         # 1 cm = sobp[1][len(sobp[0] / 5)]
         #sobp[1] /= sobp[1][int(len(sobp[0]) / 100)]
@@ -72,13 +72,13 @@ def sobp():
         areas.append(area)
         #yerr = 0
 
-        if i > 2:
+        if i > 1:
             #sobp[1] /= sobp[1].max() / measured_avgs[0]
             #yerr = sobp[2] * sobp[1] / 100
             #pass
-            sobp[1] /= area / areas[i-3]
+            sobp[1] /= area / areas[i-2]
 
-        #ax.fill_between(sobp[0], sobp[1] - yerr, sobp[1] + yerr, facecolor=clr[i], alpha=0.5)
+        #ax.fill_between(sobp[0], sobp[1] - yerr, sobp[1] + yerr, alpha=0.5)
 
         getwidth(sobp[0], sobp[1])
         #ax.errorbar(sobp[0], sobp[1], yerr=yerr, label=filenamess[i])
