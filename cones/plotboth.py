@@ -5,6 +5,7 @@ from private.private import path
 import pandas as pd
 from scipy.integrate import simpson
 from SOBPwidth import getwidth
+import scipy.interpolate as intp
 
 
 plt.style.use('/mnt/c/users/david/documents/triumf/thesis/thesis.mplstyle')
@@ -14,7 +15,7 @@ def sobp():
     dataArr = []
     filenames = []
 
-    lines = ["k-", "C0-", "k:", "C0:", "C4:", "C5:"]
+    lines = ["C1-", "C0-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-"]
 
     # load in all the files and store their names
     for file in sys.argv[1:]:
@@ -22,10 +23,11 @@ def sobp():
         filenames.append(file)
 
     fig, ax = plt.subplots()
-    filenamess = ["Normal measured", "Reverse measured", "Normal simulated", "Reverse simulated", "J3 simulated", "J5 simulated"]
+    filenamess = ["Pristine Bragg peak", "Spread out Bragg peak", "Normal simulated", "Reverse simulated", "J3 simulated", "J5 simulated"]
 
-    measured_avgs = []
+    doses = []
     areas = []
+    sobps = []
 
     #low = 2.7
     #high = 3.5
@@ -33,10 +35,6 @@ def sobp():
     #ax1 = ax.twinx()
 
     for i, sobp in enumerate(dataArr):
-
-        # change units if needed
-        #while sobp[0][-1] > 11:
-        #    sobp[0] /= 10
 
         # scale in x due to slabs angle
         diff = 0.5
@@ -55,44 +53,37 @@ def sobp():
         a = np.argmax(sobp[1] > thresh * sobp[1].max())
         sobp[0] -= sobp[0][a]
 
-        # while sobp[1].max() > 20:
-        #    sobp[1] /= 10
-
-        #slice = (sobp[0] >= float(low)) & (sobp[0] <= float(high))
-
-        # normalisation not great for films
         area = simpson(sobp[1], sobp[0])
         #sobp[1] /= area
-        #sobp[1] /= sobp[1].max()
-        # 5 cm in len(sobp[0])
-        # 1 cm = sobp[1][len(sobp[0] / 5)]
-        #sobp[1] /= sobp[1][int(len(sobp[0]) / 100)]
+        sobp[1] /= sobp[1].max()
 
-        #measured_avgs.append(np.average(sobp[1][slice]))
+        if i == 0:
+            sobp[0] -=sobp[0,40]
+            extra = 15 * [0]
+            x = sobp[0]
+            y = np.append(sobp[1], extra)
+        else:
+            x = sobp[0]
+            y = sobp[1]
+
         areas.append(area)
-        #yerr = 0
-
-        if i > 1:
-            #sobp[1] /= sobp[1].max() / measured_avgs[0]
-            #yerr = sobp[2] * sobp[1] / 100
-            #pass
-            sobp[1] /= area / areas[i-2]
-
-        #ax.fill_between(sobp[0], sobp[1] - yerr, sobp[1] + yerr, alpha=0.5)
+        doses.append(y)
+        sobps.append(x)
 
         getwidth(sobp[0], sobp[1])
-        #ax.errorbar(sobp[0], sobp[1], yerr=yerr, label=filenamess[i])
-        ax.plot(sobp[0], sobp[1], lines[i], label=filenamess[i])
+    
+        ax.plot(sobp[0], sobp[1], lines[i], label=filenames[i])
 
-    ax.legend(frameon=False)
+    #ax.legend(frameon=False)
     ax.set_xlabel("Depth in water (cm)")
-    ax.set_ylabel("Dose (Gy)")
+    ax.set_ylabel("Normalised dose (Gy)")
     ax.set_xlim(0, 5)
 
-    #ax.set_ylim(-0.1, 1.1)
+    new = doses[1][:-40] - doses[0][40:]
+    sobps[1] -= sobps[1][40]
+    ax.plot(sobps[1][40:], new, lines[i+1], label=filenamess[i+1])
 
-    #ax.xaxis.set_tick_params(length=6, width=2)
-    #ax.yaxis.set_tick_params(length=6, width=2)
+    ax.hlines(0, 0, 5)
 
     plt.tight_layout()
 
