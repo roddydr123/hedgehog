@@ -15,7 +15,7 @@ def sobp():
     dataArr = []
     filenames = []
 
-    lines = ["C1-", "C0-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-"]
+    lines = ["C1-", "k--", "C0-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-", "k-"]
 
     # load in all the files and store their names
     for file in sys.argv[1:]:
@@ -23,7 +23,7 @@ def sobp():
         filenames.append(file)
 
     fig, ax = plt.subplots()
-    filenamess = ["Pristine Bragg peak", "Spread out Bragg peak", "Normal simulated", "Reverse simulated", "J3 simulated", "J5 simulated"]
+    filenamess = ["Measured", "Simulated", "(Measured $-$ simulated)", "Reverse simulated", "J3 simulated", "J5 simulated"]
 
     doses = []
     areas = []
@@ -55,16 +55,14 @@ def sobp():
 
         area = simpson(sobp[1], sobp[0])
         #sobp[1] /= area
-        sobp[1] /= sobp[1].max()
+        #sobp[1] /= sobp[1].max()
 
         if i == 0:
-            sobp[0] -=sobp[0,40]
-            extra = 15 * [0]
-            x = sobp[0]
-            y = np.append(sobp[1], extra)
+            y = sobp[1][:-15]
+            x = sobp[0][:-15]
         else:
             x = sobp[0]
-            y = sobp[1]
+            y = sobp[1] / sobp[1].max() * doses[0].max()
 
         areas.append(area)
         doses.append(y)
@@ -72,18 +70,18 @@ def sobp():
 
         getwidth(sobp[0], sobp[1])
     
-        ax.plot(sobp[0], sobp[1], lines[i], label=filenames[i])
+        ax.plot(x,y, lines[i], label=filenamess[i])
 
-    #ax.legend(frameon=False)
     ax.set_xlabel("Depth in water (cm)")
-    ax.set_ylabel("Normalised dose (Gy)")
+    ax.set_ylabel("Dose (Gy)")
     ax.set_xlim(0, 5)
 
-    new = doses[1][:-40] - doses[0][40:]
-    sobps[1] -= sobps[1][40]
-    ax.plot(sobps[1][40:], new, lines[i+1], label=filenamess[i+1])
+    new = doses[0] - doses[1]
+    #new = np.where(new > 0, new, 0)
+    ax.plot(sobps[0], new, lines[i+1], label=filenamess[i+1])
 
-    ax.hlines(0, 0, 5)
+    ax.hlines(0, 0, 5, "k", linewidth=1)
+    ax.legend(frameon=False)
 
     plt.tight_layout()
 
