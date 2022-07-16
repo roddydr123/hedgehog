@@ -3,22 +3,25 @@ import sys
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from private.private import path
+from loader import loader
 
 
 def main():
-    range, sobp_width = input("Give the range and the SOBP width: ").split()
+    #range, sobp_width = input("Give the range and the SOBP width: ").split()
     target_file = sys.argv[1]
-    array = np.genfromtxt(f'{path}data/{target_file}.txt', skip_header=1)
-    energies = array[:, 2]
-    depths = array[:, 0]
-    getwidth(depths, energies, range=float(range),
-             sobp_width=float(sobp_width))
+    #array = np.genfromtxt(f'{path}data/{target_file}.txt', skip_header=1)
+    #energies = array[:, 2]
+    #depths = array[:, 0]
+    #getwidth(depths, energies, range=float(range),
+    #         sobp_width=float(sobp_width))
+    data = loader(target_file)
+    getwidth(data[0], data[1])
     # plotwidths()
 
 
 def getwidth(depths, energies, range=None, sobp_width=None):
     peak = energies.max()
-    peakarray = depths[energies >= 0.9 * peak]
+    peakarray = depths[energies >= 0.90 * peak]
     width = peakarray[-1] - peakarray[0]
     # SOBP width and maximum dE/dx value.
     print(f'SOBP width: {np.round(width, 3)}cm, maximum: {peak}')
@@ -31,9 +34,12 @@ def getwidth(depths, energies, range=None, sobp_width=None):
     UpLimRemove = PastPeak[PastPeak[:, 1] < 0.9 * peak]
     LowLimRemove = UpLimRemove[UpLimRemove[:, 1] > 0.1 * peak][:, 0]
     dropoff = LowLimRemove[-1] - LowLimRemove[0]
+    d90 = LowLimRemove[0]
+    d10 = LowLimRemove[-1]
     print(f'90/10 dropoff takes {round(dropoff, 4)}cm')
-    print(f"90% distal point: {LowLimRemove[0]}")
-    print(f"10% distal point: {LowLimRemove[-1]}")
+    print(f"90% distal point: {d90}")
+    print(peakarray[-1])
+    print(f"10% distal point: {d10}")
 
     if range:
         # increase range because fluka sobp starts at 1
@@ -45,6 +51,8 @@ def getwidth(depths, energies, range=None, sobp_width=None):
         print(f"target stdev: "
               f"{np.round((target_stdev * 100) / np.average(target_dose), 3)}"
               f"%")
+
+    return width, d90, 
 
 
 def plotwidths():
