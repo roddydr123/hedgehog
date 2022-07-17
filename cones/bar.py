@@ -33,7 +33,10 @@ ax.set_yticks([11, 19], labels=labels)
 plt.show()
 """
 
-files = ["hedgehogJ1-1-gen.npz", "hedgehogJ1-1.txt", "film33cg6.csv", 
+plt.style.use('/mnt/c/users/david/documents/triumf/thesis/thesis.mplstyle')
+
+files = ["nohedgehog.txt", "film34cg6.csv",
+         "hedgehogJ1-1-gen.npz", "hedgehogJ1-1.txt", "film33cg6.csv", 
          "hedgehogJ2-gen.npz", "hedgehogJ2.txt", "film35cg6.csv",
          "hedgehogJ3-gen.npz", "hedgehogJ3.txt", "film30cg6.csv",
          "hedgehogJ4-gen.npz", "hedgehogJ4.txt", "film31cg6.csv",
@@ -43,7 +46,7 @@ labelsl = ['Optimized', 'Simulated', 'Measured']
 
 def repbar(data):
 
-    labels = ["J1-1", "J2", "J3", "J4", "J5"]
+    labels = ["None", "J1-1", "J2", "J3", "J4", "J5"]
     ticklocs = []
     fcs = ['C0', 'C1', 'C2']
     fcs1 = ['#194d72', '#ba671f', '#237723']
@@ -53,7 +56,11 @@ def repbar(data):
 
     fig, ax = plt.subplots()
 
+    ax.broken_barh([(0, 0)], (ystart, yextent), facecolors="w")
+
     for i, bar in enumerate(data):
+        i += 1
+
         startpeak = bar[0]
         peakwidth = bar[1]
         dropoff = bar[2]
@@ -79,7 +86,7 @@ def repbar(data):
         else:
             ystart += yextent
 
-    ax.set_ylim(0, 40)
+    ax.set_ylim(0, 46)
     ax.set_xlim(0, 5)
     ax.set_xlabel('Depth into water (cm)')
     ax.set_ylabel('HEDGEHOG name')
