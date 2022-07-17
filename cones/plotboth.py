@@ -46,7 +46,7 @@ def sobp():
         if ".csv" in filenames[i]:
             thresh = 0.2
             sobp[0] *= scaler
-            sobp[0] /= 10
+            #sobp[0] /= 10
         else:
             thresh = 0.1
 

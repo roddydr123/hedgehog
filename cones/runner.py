@@ -3,10 +3,10 @@ from private.private import path
 import numpy as np
 
 
-h = hedgehog(1.5, 4.0, 12, "test", tolerance=1E-4)
+h = hedgehog(2.5, 4.0, 20, "hedgehogJ5", tolerance=1E-3)
 
-h.viewDetails()
-#h.generateGDML(5, 2.3)
+#h.viewDetails()
+h.generateGDML(5, 2.3)
 #h.gdml2f()
 #h.gdml2stl()
 

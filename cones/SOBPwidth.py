@@ -34,11 +34,10 @@ def getwidth(depths, energies, range=None, sobp_width=None):
     UpLimRemove = PastPeak[PastPeak[:, 1] < 0.9 * peak]
     LowLimRemove = UpLimRemove[UpLimRemove[:, 1] > 0.1 * peak][:, 0]
     dropoff = LowLimRemove[-1] - LowLimRemove[0]
-    d90 = LowLimRemove[0]
+    d90 = LowLimRemove[0] # or peakarray[-1]
     d10 = LowLimRemove[-1]
     print(f'90/10 dropoff takes {round(dropoff, 4)}cm')
     print(f"90% distal point: {d90}")
-    print(peakarray[-1])
     print(f"10% distal point: {d10}")
 
     if range:
@@ -52,7 +51,7 @@ def getwidth(depths, energies, range=None, sobp_width=None):
               f"{np.round((target_stdev * 100) / np.average(target_dose), 3)}"
               f"%")
 
-    return width, d90, 
+    return peakarray[0], width, dropoff
 
 
 def plotwidths():
