@@ -1,16 +1,16 @@
 import pyg4ometry
 import sys
 import re
-from private.private import path
+import os
 
 
-def convert(zsep, file=None):
+def convert(template, filename=None):
 
-    if not file:
-        file = sys.argv[1]
+    if not filename:
+        filename = sys.argv[1]
     print("opening file...")
 
-    reader = pyg4ometry.gdml.Reader(f"{path}files/{file}.gdml")
+    reader = pyg4ometry.gdml.Reader(f"{filename}.gdml")
     world = reader.getRegistry().getWorldVolume()
 
     # there's two hedgehog bases in the GDML file because fluka cant deal
@@ -45,9 +45,10 @@ def convert(zsep, file=None):
     print("writing...")
     w = pyg4ometry.fluka.Writer()
     w.addDetector(freg)
-    w.write(f"{path}files/{file}.inp")
+    w.write(f"{filename}temp.inp")
     print("adding to template...")
-    addToTemplate(file, zsep)
+    addToTemplate(filename, template)
+    os.remove(f"{filename}temp.inp")
     print("complete!")
 
 
@@ -62,21 +63,15 @@ def checkRegion(key):
         return 400
 
 
-def addToTemplate(filename, zsep):
+def addToTemplate(filename, template_path):
 
-    # choose the template based on z separation
-    if zsep == 36.5:
-        # template = open("static/beamline.inp", "r")
-        template = open("static/upbeam.inp", "r")
-
-        # template = open("static/reverse.inp", "r") for reverse hedgehog
-    else:
-        template = open("static/template.inp", "r")
+    # template file
+    template = open(template_path, "r")
 
     # merge the generated geometry with a template file
-    with open(f"{path}files/{filename}geo.inp", "w") as file:
+    with open(f"{filename}.inp", "w") as file:
         templines = template.readlines()
-        geometryfile = open(f"{path}files/{filename}.inp", "r")
+        geometryfile = open(f"{filename}temp.inp", "r")
         geolines = geometryfile.readlines()[:-1]
         # split the template
         for i in range(len(templines)):

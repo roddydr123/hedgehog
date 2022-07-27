@@ -6,33 +6,29 @@ from .cubic import optimizer
 
 class hedgehog():
 
-    def __init__(self, SOBPwidth, range, steps, filename, d_across_pinbase=0.7,
-                 tolerance=1E-4, zsep=36.5, usrWeights=[1, 1, 1]):
-        self.SOBPwidth = SOBPwidth
-        self.range = range
-        self.steps = steps
+    def __init__(self, SOBPeak, undersim, filename, d_across_pinbase=0.7,
+                 tolerance=1E-4, usrWeights=[1, 1, 1]):
+        self.SOBPeak = SOBPeak
+        self.undersim = undersim
         self.d_across_pinbase = d_across_pinbase
         self.tolerance = tolerance
-        self.pinData = None
-        self.zsep = zsep
         self.usrWeights = usrWeights
         self.filename = filename
 
     def viewDetails(self):
-        self.pinData = optimizer(self.SOBPwidth, self.range, self.steps,
-                                 self.d_across_pinbase, self.tolerance,
-                                 self.zsep, self.usrWeights, show=1,
-                                 filename=self.filename)
+        optimizer(self.SOBPeak, self.undersim, self.d_across_pinbase, self.tolerance,
+                  self.usrWeights, show=1, filename=self.filename)
 
-    def generateGDML(self, baseEdges, rad):
+    def generateGDML(self, baseEdges, rad, zsep):
+        # zsep is location of hedgehog in geometry
         self.baseEdges = baseEdges
         self.rad = rad
-        build(self.d_across_pinbase, self.baseEdges, self.filename,
-              self.SOBPwidth, self.range, self.steps, self.tolerance,
-              self.zsep, self.usrWeights, self.rad, pinData=self.pinData)
+        self.zsep = zsep
+        build(self.d_across_pinbase, self.baseEdges, self.filename, self.SOBPeak,
+              self.undersim, self.tolerance, self.usrWeights, self.rad, self.zsep)
 
-    def gdml2f(self):
-        g2f.convert(self.zsep, file=self.filename)
+    def gdml2f(self, template):
+        g2f.convert(template, filename=self.filename)
 
     def gdml2stl(self):
         g2s.convert(filename=self.filename)
@@ -44,3 +40,18 @@ class hedgehog():
     def toSTL(self):
         self.generateGDML()
         self.gdml2stl()
+
+
+class undersim:
+
+    def __init__(self, thicklist, filepath):
+        self.thicklist = thicklist
+        self.filepath = filepath
+
+
+class SOBPeak:
+
+    def __init__(self, SOBPwidth, range, steps):
+        self.width = SOBPwidth
+        self.range = range
+        self.steps = steps

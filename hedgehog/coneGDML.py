@@ -2,11 +2,6 @@ import pyg4ometry
 import numpy as np
 import sys
 from .cubic import optimizer
-from private.private import path
-
-
-def baseQuad(x):
-    return x**2
 
 
 def getPinLocs(d_across_pinbase, baseEdges):
@@ -39,8 +34,8 @@ def circCheck(rad, d_across_pinbase, x, y):
     return True
 
 
-def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
-          tolerance, zsep, usrWeights, rad, pinData=None):
+def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
+          tolerance, usrWeights, rad, zsep, pinData=None):
 
     if not filename:
         filename = sys.argv[1]
@@ -48,9 +43,8 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     reg = pyg4ometry.geant4.Registry()
 
     if not pinData:
-        pinData = optimizer(SOBPwidth, range, steps, d_across_pinbase,
-                            tolerance, zsep, usrWeights,
-                            filename=filename, show=1)
+        pinData = optimizer(SOBPeak, undersim, d_across_pinbase, tolerance,
+                            usrWeights, filename=filename, show=1)
 
     radii = pinData["radii"]
     thicknesses = pinData["thicknesses"]
@@ -76,7 +70,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     # make air box around hedgehog
     hbox_thick = thicknesses.max() + 0.5
     # move everything to the correct z location
-    new_zero = 13.6 + 0.05
+    new_zero = zsep #13.6 + 0.05
 
     hb1 = pyg4ometry.geant4.solid.Box("hb1", 9, 9,
                                       hbox_thick, reg, lunit="cm")
@@ -174,7 +168,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPwidth, range, steps,
     writer = pyg4ometry.gdml.Writer()
     # this is how pyg4ometry does writing to a file...
     writer.addDetector(reg)
-    writer.write(f"{path}files/{filename}.gdml")
+    writer.write(f"{filename}.gdml")
     print("done")
 
 

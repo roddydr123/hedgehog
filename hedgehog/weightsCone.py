@@ -1,19 +1,23 @@
 import numpy as np
 
 
-def blockSpecs(SOBPwidth, range, steps):
-    weights = calcWeights(steps, SOBPwidth, range)
-    height = blockHeight(steps, SOBPwidth)
-    desired = [range, SOBPwidth]
+def blockSpecs(SOBPeak):
+    weights = calcWeights(SOBPeak)
+    height = blockHeight(SOBPeak)
+    desired = [SOBPeak.range, SOBPeak.width]
 
     return height, weights, desired
 
 
-def calcWeights(steps, SOBPwidth, db):
+def calcWeights(SOBPeak):
     """
     Uses Bortfeld 1996 method to calculate the weights of the
     pristine BPs composing the desired SOBP.
     """
+    db = SOBPeak.range
+    steps = SOBPeak.steps
+    SOBPwidth = SOBPeak.width
+
     rho = 1             # density of absorbing medium, 1 for water
     D0 = 1              # desired height of SOBP
     p = 1.8
@@ -36,8 +40,8 @@ def calcWeights(steps, SOBPwidth, db):
     return norm
 
 
-def blockHeight(steps, SOBPwidth):
-    return SOBPwidth / steps
+def blockHeight(SOBPeak):
+    return SOBPeak.width / SOBPeak.steps
 
 
 def wToRadii(weights, d_across_pinbase):

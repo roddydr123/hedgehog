@@ -1,7 +1,6 @@
 import pyg4ometry
 import sys
 import vtk as _vtk
-from private.private import path
 
 
 def writeVtkPolyDataAsSTLFile(fileName, meshes):
@@ -38,7 +37,7 @@ def convert(filename=None):
         filename = sys.argv[1]
 
     print("reading...")
-    r = pyg4ometry.gdml.Reader(f'{path}files/{filename}.gdml')
+    r = pyg4ometry.gdml.Reader(f'{filename}.gdml')
     reg = r.getRegistry()
 
     meshes = []
@@ -82,7 +81,7 @@ def convert(filename=None):
             meshes.append(vtkPD)
 
     print("writing...")
-    writeVtkPolyDataAsSTLFile(f'{path}files/{filename}.stl', meshes)
+    writeVtkPolyDataAsSTLFile(f'{filename}.stl', meshes)
 
 
 if __name__ == "__main__":
