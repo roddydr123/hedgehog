@@ -4,9 +4,9 @@ import numpy as np
 from private.private import path
 import pandas as pd
 from scipy.integrate import simpson
-from SOBPwidth import getwidth
+from .SOBPwidth import getwidth
 import scipy.interpolate as intp
-from loader import loader
+from .loader import loader
 
 
 plt.style.use('/mnt/c/users/david/documents/triumf/thesis/thesis.mplstyle')

@@ -2,8 +2,8 @@ import scipy.interpolate as interpolate
 import scipy.optimize as opt
 import numpy as np
 import matplotlib.pyplot as plt
-import weightsCone as wc
-from SOBPwidth import getwidth
+from . import weightsCone as wc
+from .SOBPwidth import getwidth
 from private.private import path
 
 waterEquiv = 1.158

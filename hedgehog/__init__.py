@@ -1,1 +1,1 @@
-from SOBPwidth import getwidth
+from .hedgehog import hedgehog

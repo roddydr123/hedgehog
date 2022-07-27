@@ -3,7 +3,7 @@ import sys
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from private.private import path
-from loader import loader
+from .loader import loader
 
 
 def main():

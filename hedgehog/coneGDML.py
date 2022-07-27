@@ -1,7 +1,7 @@
 import pyg4ometry
 import numpy as np
 import sys
-from cubic import optimizer
+from .cubic import optimizer
 from private.private import path
 
 
