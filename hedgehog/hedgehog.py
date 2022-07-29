@@ -4,7 +4,7 @@ from . import gdml2stl as g2s
 from .cubic import optimizer
 
 
-class hedgehog():
+class hedgehog:
 
     def __init__(self, SOBPeak, undersim, filename, d_across_pinbase=0.7,
                  tolerance=1E-4, usrWeights=[1, 1, 1]):
