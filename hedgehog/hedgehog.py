@@ -33,14 +33,6 @@ class hedgehog:
     def gdml2stl(self):
         g2s.convert(filename=self.filename)
 
-    def toFLUKA(self):
-        self.generateGDML()
-        self.gdml2f()
-
-    def toSTL(self):
-        self.generateGDML()
-        self.gdml2stl()
-
 
 class undersim:
 
