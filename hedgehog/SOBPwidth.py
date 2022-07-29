@@ -2,21 +2,6 @@ import numpy as np
 import sys
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
-from private.private import path
-from .loader import loader
-
-
-def main():
-    #range, sobp_width = input("Give the range and the SOBP width: ").split()
-    target_file = sys.argv[1]
-    #array = np.genfromtxt(f'{path}data/{target_file}.txt', skip_header=1)
-    #energies = array[:, 2]
-    #depths = array[:, 0]
-    #getwidth(depths, energies, range=float(range),
-    #         sobp_width=float(sobp_width))
-    data = loader(target_file)
-    getwidth(data[0], data[1])
-    # plotwidths()
 
 
 def getwidth(depths, energies, range=None, sobp_width=None):
@@ -52,27 +37,3 @@ def getwidth(depths, energies, range=None, sobp_width=None):
               f"%")
 
     return peakarray[0], width, dropoff
-
-
-def plotwidths():
-    xdata = np.array([0, 0.25, 0.5, 0.59, 0.75, 1])
-    thiccx = np.linspace(xdata[0], xdata[-1], 1000)
-    ydata = np.array([3.13, 3.71, 4.54, 4.92, 5.83, 7.17])
-    poptExp, pcovExp = curve_fit(exponential, xdata, ydata)
-    perrExp = np.sqrt(np.diag(pcovExp))
-    print(f'eqn is ae^bx + c: {poptExp} +- {perrExp}')
-
-    fig, ax = plt.subplots()
-    ax.scatter(xdata, ydata)
-    ax.plot(thiccx, exponential(thiccx, *poptExp), "y")
-    ax.set_xlabel("Pin length (cm)")
-    ax.set_ylabel("SOBP width (mm)")
-    plt.show()
-
-
-def exponential(x, a, b, c):
-    return a * np.exp(b * x) + c
-
-
-if __name__ == "__main__":
-    main()
