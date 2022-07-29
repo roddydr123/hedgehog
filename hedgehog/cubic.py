@@ -53,11 +53,11 @@ def genInitGuess(SOBPeak, d_across_pinbase, peaks=None, thicknesses=None):
     leading = base_thickness // height
 
     # add zero weight thicknesses either end of the pin for opt to play with
-    padding_zeros = int(leading)
-    base_thickness -= (padding_zeros * height)
-    extra_weights = [0.0] * padding_zeros
-    weights = np.append(weights, extra_weights)
-    weights = np.insert(weights, 0, extra_weights)
+    #padding_zeros = int(leading)
+    #base_thickness -= (padding_zeros * height)
+    #extra_weights = [0.0] * padding_zeros
+    #weights = np.append(weights, extra_weights)
+    #weights = np.insert(weights, 0, extra_weights)
 
     # find the thicknesses from the heights
     new_thicknesses = np.zeros_like(weights)
@@ -70,35 +70,61 @@ def genInitGuess(SOBPeak, d_across_pinbase, peaks=None, thicknesses=None):
     return new_thicknesses, weights, desired, base_thickness
 
 
+def fitfunc(thicknesses, A1, A2, b, a1, a2, a3, a4):
+    Ngap = int(len(thicknesses) / 15)
+    weights = []
+    weights.append(A1)
+    for j in range(Ngap):
+        weights.append(0)
+
+    for i in range(1, len(thicknesses) - Ngap):
+        v = i**(-b) *((a1 * i) + (a2 * i**2) + (a3 * i**3) + (a4 * i**4))
+        weights.append(A2 * v)
+
+    return np.array(weights)
+
+
 def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
             desired=None, filename=None, base_thickness=None):
     """
     Takes a thickness profile and generates an SOBP from it
     using the interpolated matrix.
     """
-    # make the full thickness profile W(T)
-    density = 100
+
+    density = 300
     dense_thicknesses = np.linspace(thicknesses[0], thicknesses[-1], density)
     interp_weights = interpolate.UnivariateSpline(thicknesses, weights, s=0)
     dense_weights = interp_weights(dense_thicknesses)
 
+    popt, pcov = opt.curve_fit(fitfunc, dense_thicknesses, dense_weights, p0=[10, 0.2, 4, 1, 1, 1, 1])
+    #print(popt)
+
+    # make the full thickness profile W(T)
+    #density = 300
+    #dense_thicknesses = np.linspace(thicknesses[0], thicknesses[-1], density)
+
+    fit_weights = fitfunc(dense_thicknesses, *popt)
+
     # set any negative weights to zero as they're unphysical
-    dense_weights = np.where(dense_weights > 0, dense_weights, 0)
+    fit_weights = np.where(fit_weights > 0, fit_weights, 0)
+
+    #plt.scatter(dense_thicknesses, dense_weights)
+    #plt.show()
 
     # set any weights for thicknesses less than the base to zero
-    dense_weights = np.where(dense_thicknesses > base_thickness,
-                             dense_weights, 0)
+    #dense_weights = np.where(dense_thicknesses > base_thickness,
+    #                         dense_weights, 0)
 
     # set any weights after the first zero to zero, as an artefact of cubic
     # splines can make extra bumps in the weights profile. Cut in half to
     # not include leading zeros.
-    half = dense_weights[int(len(dense_weights) / 2):][::-1]
-    try:
-        zero_index = np.where(half == 0)[0][-1] + 1
-        dense_weights[-zero_index:] = 0
-    except IndexError:
-        # sometimes there are no zeros...
-        pass
+    #half = dense_weights[int(len(dense_weights) / 2):][::-1]
+    #try:
+    #    zero_index = np.where(half == 0)[0][-1] + 1
+    #    dense_weights[-zero_index:] = 0
+    #except IndexError:
+    #    # sometimes there are no zeros...
+    #    pass
 
     # now find the depth-dose profile (BP) for each thickness by interpolation
     # we don't interpolate along the depth-dose profile at the moment, could
@@ -110,17 +136,17 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
 
     # calculate radii from the full pin profile and return it for
     # building the pins in gdml
-    radii = wc.wToRadii(dense_weights, d_across_pinbase)
+    radii = wc.wToRadii(fit_weights, d_across_pinbase)
 
     # trim small radii
     slice = radii > 0.002
     radii = radii[slice]
     dense_thicknesses = dense_thicknesses[slice]
-    dense_weights = dense_weights[slice]
+    fit_weights = fit_weights[slice]
     dense_doses = dense_doses[slice]
 
     # perform a weighted sum of the BPs
-    sobp = np.dot(dense_doses.T, dense_weights)
+    sobp = np.dot(dense_doses.T, fit_weights)
 
     # and normalise again :)
     sobp = sobp / sobp.max()
@@ -150,8 +176,8 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
 
         # show a plot of the weights profile
         ax3 = fig.add_subplot(224)
-        ax3.scatter(thicknesses[:-2], weights[:-2], s=7, color='k')
-        ax3.plot(dense_thicknesses, dense_weights)
+        ax3.scatter(thicknesses, weights, s=7, color='k')
+        ax3.plot(dense_thicknesses, fit_weights)
         ax3.set_xlabel("Thickness (cm)")
         ax3.set_ylabel("Weight")
 
@@ -159,8 +185,8 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
         ax4 = fig.add_subplot(221)
         wdose = []
         for i, dose in enumerate(dense_doses):
-            ax4.plot(depth_dose_sobp[0], dose * dense_weights[i])
-            wdose.append(dose * dense_weights[i])
+            ax4.plot(depth_dose_sobp[0], dose * fit_weights[i])
+            wdose.append(dose * fit_weights[i])
         ax4.plot(depth_dose_sobp[0], np.sum(wdose, axis=0))
         ax4.set_xlabel("Depth (cm)")
         ax4.set_ylabel("Dose")
