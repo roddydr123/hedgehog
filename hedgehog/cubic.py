@@ -49,7 +49,7 @@ def genInitGuess(SOBPeak, d_across_pinbase, peaks=None, thicknesses=None):
     if base_thickness == 0.0:
         raise ValueError("Your desired SOBP is outwith the range of the \
                          underlying simulations. Please reduce the range.")
-
+    """
     leading = base_thickness // height
 
     # add zero weight thicknesses either end of the pin for opt to play with
@@ -58,7 +58,7 @@ def genInitGuess(SOBPeak, d_across_pinbase, peaks=None, thicknesses=None):
     extra_weights = [0.0] * padding_zeros
     weights = np.append(weights, extra_weights)
     weights = np.insert(weights, 0, extra_weights)
-
+    """
     # find the thicknesses from the heights
     new_thicknesses = np.zeros_like(weights)
 
@@ -88,7 +88,7 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
     # set any weights for thicknesses less than the base to zero
     dense_weights = np.where(dense_thicknesses > base_thickness,
                              dense_weights, 0)
-
+    """
     # set any weights after the first zero to zero, as an artefact of cubic
     # splines can make extra bumps in the weights profile. Cut in half to
     # not include leading zeros.
@@ -99,6 +99,7 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
     except IndexError:
         # sometimes there are no zeros...
         pass
+    """
 
     # now find the depth-dose profile (BP) for each thickness by interpolation
     # we don't interpolate along the depth-dose profile at the moment, could
@@ -224,6 +225,7 @@ def optimizer(SOBPeak, undersim, d_across_pinbase, tolerance, usrWeights,
     """
 
     sDDict = getSimData(undersim)
+
     # get the details of the initial guess stepped hedgehog
     # and the weights of the SOBPs
     init_thicknesses, init_weights, desired, base_thickness = \
@@ -246,10 +248,6 @@ def optimizer(SOBPeak, undersim, d_across_pinbase, tolerance, usrWeights,
                                        d_across_pinbase, show=show,
                                        desired=desired, filename=filename,
                                        base_thickness=base_thickness)
-
-    #with open(path+"minsum.txt", "a") as file:
-    #    file.write(str(res.fun)+"\n")
-    #    print(res.fun)
 
     return pinData
 
