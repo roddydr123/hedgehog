@@ -170,3 +170,8 @@ loader.py
 plotboth.py
 runner.py
 readgdml.py
+usims/
+.gdml
+.stl
+.npz
+hedgehogJ5.inp
