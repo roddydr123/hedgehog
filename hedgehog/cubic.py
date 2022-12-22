@@ -3,15 +3,30 @@ import scipy.optimize as opt
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from . import weightsCone as wc
-from .SOBPwidth import getwidth
+import weightsCone as wc
+from SOBPwidth import getwidth
+import re
+
+
+def atoi(text):
+    return int(text) if text.isdigit() else text
+
+
+def natural_keys(text):
+    '''
+    alist.sort(key=natural_keys) sorts in human order
+    http://nedbatchelder.com/blog/200712/human_sorting.html
+    (See Toothy's implementation in the comments)
+    '''
+    return [ atoi(c) for c in re.split(r'(\d+)', text) ]
 
 
 def getSimData(undersim):
     doses = []
     peaks = []
 
-    for root, dirs, files in os.walk(undersim.filepath):
+    for root, dirs, files in os.walk(undersim.filepath, topdown=True):
+        files.sort(key=natural_keys)
         for file in files:
             data = np.genfromtxt(f"{undersim.filepath}/{file}", skip_header=1)
             dose = data[:, 2]
@@ -39,7 +54,6 @@ def genInitGuess(SOBPeak, d_across_pinbase, peaks=None, thicknesses=None):
     """
 
     height, weights, desired = wc.blockSpecs(SOBPeak)
-
     # finding the base thickness as the thickness which will
     # results in a peak at the range point
     peak_interp = interpolate.UnivariateSpline(peaks[::-1],
