@@ -1,7 +1,7 @@
 import pyg4ometry
 import numpy as np
 import sys
-from .cubic import optimizer
+from cubic import optimizer
 
 
 def getPinLocs(d_across_pinbase, baseEdges):

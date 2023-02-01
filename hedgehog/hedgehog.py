@@ -1,7 +1,7 @@
-from .coneGDML import build
-from . import gdml2f as g2f
-from . import gdml2stl as g2s
-from .cubic import optimizer
+from coneGDML import build
+import gdml2f as g2f
+import gdml2stl as g2s
+from cubic import optimizer
 
 
 class hedgehog:

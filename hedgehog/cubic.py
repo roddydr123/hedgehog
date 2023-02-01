@@ -3,8 +3,8 @@ import scipy.optimize as opt
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from . import weightsCone as wc
-from .SOBPwidth import getwidth
+import weightsCone as wc
+from SOBPwidth import getwidth
 import re
 
 
