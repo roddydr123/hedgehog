@@ -161,17 +161,6 @@ cython_debug/
 
 .inp~
 .pickle
-private/
-matrix/
-static/
-scripts/
-bar.py
-loader.py
-plotboth.py
-runner.py
-readgdml.py
-usims/
-.gdml
-.stl
-.npz
-hedgehogJ5.inp
+*.gdml
+*.stl
+*.npz
