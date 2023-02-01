@@ -8,6 +8,16 @@ class hedgehog:
 
     def __init__(self, SOBPeak, undersim, filename, d_across_pinbase=0.7,
                  tolerance=1E-4, usrWeights=[1, 1, 1]):
+        """Object which allows running of HEDGEHOG optimizations.
+
+        Args:
+            SOBPeak (Object): Describes the shape of the desired SOBP.
+            undersim (Object): Contains details of the PMMA thicknesses of the underlying simulations, and the path to the simulation data.
+            filename (string): The path and filename where the HEDGEHOG outfiles will be placed.
+            d_across_pinbase (float, optional): Diameter of the base of each pin. Defaults to 0.7.
+            tolerance (scientific notation, optional): Tolerance of the optimization; converges to within this number. Defaults to 1E-4.
+            usrWeights (list, optional): Weights to be placed on the plateau, proximal and distal edges of the SOBP. Defaults to [1, 1, 1].
+        """
         self.SOBPeak = SOBPeak
         self.undersim = undersim
         self.d_across_pinbase = d_across_pinbase
@@ -20,7 +30,14 @@ class hedgehog:
                   self.usrWeights, show=1, filename=self.filename)
 
     def generateGDML(self, baseEdges, rad, zsep):
-        # zsep is location of hedgehog in geometry
+        """Runs an optimisation sequence and builds the geometry in GDML format.
+
+        Args:
+            baseEdges (float): Length of the edges of the HEDGEHOG base in cm.
+            rad (float): Radius from centre of base to build pins in. Usually set to half the shortest baseEdge.
+            zsep (float): Distance between upstream edge of water target and point where HEDGEHOG pins meet its base.
+        """
+
         self.baseEdges = baseEdges
         self.rad = rad
         self.zsep = zsep
