@@ -22,8 +22,8 @@ def getwidth(depths, energies, range=None, sobp_width=None):
     d90 = LowLimRemove[0] # or peakarray[-1]
     d10 = LowLimRemove[-1]
     print(f'90/10 dropoff takes {round(dropoff, 4)}cm')
-    print(f"90% distal point: {d90}")
-    print(f"10% distal point: {d10}")
+    print(f"90% distal point: {np.round(d90, 3)}")
+    print(f"10% distal point: {np.round(d10, 3)}\n\n")
 
     if range:
         # increase range because fluka sobp starts at 1
