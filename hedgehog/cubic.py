@@ -8,6 +8,15 @@ from SOBPwidth import getwidth
 import re
 
 
+def logger(data, first=False):
+    if first is True:
+        with open("optimiser.log", "w") as file:
+            file.write(f"{data}\n")
+    else:
+        with open("optimiser.log", "a") as file:
+            file.write(f"{data}\n")
+
+
 def atoi(text):
     return int(text) if text.isdigit() else text
 
@@ -84,7 +93,7 @@ def genInitGuess(SOBPeak, d_across_pinbase, peaks=None, thicknesses=None):
     return new_thicknesses, weights, desired, base_thickness
 
 
-def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
+def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, radius_cutoff, show=0,
             desired=None, filename=None, base_thickness=None):
     """
     Takes a thickness profile and generates an SOBP from it
@@ -128,7 +137,7 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
     radii = wc.wToRadii(dense_weights, d_across_pinbase)
 
     # trim small radii
-    slice = radii > 0.002
+    slice = radii > radius_cutoff
     radii = radii[slice]
     dense_thicknesses = dense_thicknesses[slice]
     dense_weights = dense_weights[slice]
@@ -191,7 +200,7 @@ def genSOBP(thicknesses, weights, sDDict, d_across_pinbase, show=0,
 
 
 def objectiveFunc(weights, thicknesses, desired, sDDict, d_across_pinbase,
-                  usrWeights, base_thickness):
+                  usrWeights, base_thickness, radius_cutoff):
 
     range = desired[0]
     plat_width = desired[1]
@@ -199,7 +208,7 @@ def objectiveFunc(weights, thicknesses, desired, sDDict, d_across_pinbase,
     # get the sobp for this thickness profile and
     # partition it into entrance, target and exit regions
     depth_dose_sobp, pinData = \
-        genSOBP(thicknesses, weights, sDDict, d_across_pinbase,
+        genSOBP(thicknesses, weights, sDDict, d_across_pinbase, radius_cutoff,
                 desired=desired, base_thickness=base_thickness)
     # the slices are truth arrays
     ent_region_slice = depth_dose_sobp[0] < (range - plat_width)
@@ -225,13 +234,14 @@ def objectiveFunc(weights, thicknesses, desired, sDDict, d_across_pinbase,
     scalar = (optWeights[0] * target_stdev) + (optWeights[1] * ent_sum) +\
              (optWeights[2] * exit_sum)
 
-    print(scalar,
-          f"{np.round((target_stdev * 100) / np.average(target_dose),3)}%")
+    logger(f"{scalar}  {np.round((target_stdev * 100) / np.average(target_dose),3)}")
+    print('\r    \r', end='', flush=True)
+    print(f"minimising... {np.round(scalar, 3)}", end='', flush=True)
 
     return scalar
 
 
-def optimizer(SOBPeak, undersim, d_across_pinbase, tolerance, usrWeights,
+def optimizer(SOBPeak, undersim, d_across_pinbase, tolerance, usrWeights, radius_cutoff,
               filename=None, show=1):
     """
     Calls the optimization function - objectiveFunc().
@@ -248,7 +258,7 @@ def optimizer(SOBPeak, undersim, d_across_pinbase, tolerance, usrWeights,
 
     x0 = init_weights
     args = (init_thicknesses, desired, sDDict, d_across_pinbase, usrWeights,
-            base_thickness)
+            base_thickness, radius_cutoff)
 
     bounds = [(0, 1)] * len(init_weights)
 
@@ -256,10 +266,12 @@ def optimizer(SOBPeak, undersim, d_across_pinbase, tolerance, usrWeights,
 
     res = opt.minimize(objectiveFunc, x0, args=args, bounds=bounds,
                        method="SLSQP", tol=tolerance, options=options)
-    print(res)
+    print(f"\n\n{res.message}\n\n")
+    logger("\n\nEND OF OPTIMIZATION\n")
+    logger(res)
     opt_weights = res.x
     depth_dose_sobp, pinData = genSOBP(init_thicknesses, opt_weights, sDDict,
-                                       d_across_pinbase, show=show,
+                                       d_across_pinbase, radius_cutoff, show=show,
                                        desired=desired, filename=filename,
                                        base_thickness=base_thickness)
 
