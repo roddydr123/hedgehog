@@ -82,10 +82,10 @@ def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
                        hb1_l, "hb1_p", wl, reg)
 
     # extra base area for attaching to mount (cm), currently 1cm
-    extra = 1 * 10
+    extra = 1
 
-    shortCoord = (baseEdges/2 - baseThickness) * 10
-    longCoord = (baseEdges/2) * 10
+    shortCoord = (baseEdges/2 - baseThickness)
+    longCoord = (baseEdges/2)
 
     # create the base object with planes for STL conversion
     b1 = pyg4ometry.geant4.solid.GenericTrap("b1", shortCoord, longCoord,
@@ -96,7 +96,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
                                              longCoord, -longCoord,
                                              -longCoord - extra, -longCoord,
                                              -longCoord - extra, longCoord,
-                                             baseThickness * 5, reg,
+                                             baseThickness/2, reg,
                                              lunit="cm")
     b1_l = pyg4ometry.geant4.LogicalVolume(b1, "G4_Fe", "b1_l", reg,
                                            lunit="cm")
