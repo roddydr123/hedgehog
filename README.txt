@@ -1,9 +1,10 @@
 Programme for optimizing, simulating and creating 3D printable HEDGEHOGs (3D range modulators for proton therapy)
 
 Installation:
-1. clone repo with "git clone git@github.com:roddydr123/hedgehog.git".
-2. install requirements using "pip install -r requirements.txt"
-3. copy nist_materials.txt and nist_elements.txt into pyg4ometry package directory "pyg4ometry/geant4/".
+1. create and activate a virtual environment - makes step 4 easier.
+2. clone repo with "git clone git@github.com:roddydr123/hedgehog.git".
+3. install requirements using "pip install -r requirements.txt"
+4. copy nist_materials.txt and nist_elements.txt into pyg4ometry package directory "pyg4ometry/geant4/".
 
 
 Use runner.py as example of setting up to produce a HEDGEHOG.
