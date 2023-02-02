@@ -185,4 +185,5 @@ def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
     # write to file
     writer.addDetector(reg)
     writer.write(f"{filename}.gdml")
-    print("done")
+    print('\r    \r', end='', flush=True)
+    print("writing... done")
