@@ -8,7 +8,7 @@ def convert(template, filename=None):
 
     if not filename:
         filename = sys.argv[1]
-    print("opening file...")
+    print("opening file for conversion to FLUKA input...")
 
     reader = pyg4ometry.gdml.Reader(f"{filename}.gdml")
     world = reader.getRegistry().getWorldVolume()
@@ -46,7 +46,6 @@ def convert(template, filename=None):
     w = pyg4ometry.fluka.Writer()
     w.addDetector(freg)
     w.write(f"{filename}temp.inp")
-    print("adding to template...")
     addToTemplate(filename, template)
     os.remove(f"{filename}temp.inp")
     print("complete!")
