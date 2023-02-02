@@ -5,6 +5,15 @@ from cubic import optimizer
 
 
 def getPinLocs(d_across_pinbase, baseEdges):
+    """Finds locations to place pins which will tile the HEDGEHOG base surface.
+
+    Args:
+        d_across_pinbase (float): Diameter across the base or each pin.
+        baseEdges (float): Length along the shortest side of the base when viewed from above.
+
+    Returns:
+        numpy array: Two numpy arrays describing the pin locations in x and y.
+    """
     q = 3 * d_across_pinbase / np.sqrt(3)
 
     start = (baseEdges * -1/2) + d_across_pinbase/2
@@ -18,9 +27,17 @@ def getPinLocs(d_across_pinbase, baseEdges):
 
 
 def circCheck(rad, d_across_pinbase, x, y):
-    """
-    Determines if a given pin is entirely within a circle of radius
+    """Determines if a given pin is entirely within a circle of radius
     rad before allowing it to be printed.
+
+    Args:
+        rad (float): Radius from centre of HEDGEHOG base within pins should be placed.
+        d_across_pinbase (float): Diameter across the base of each pin.
+        x (float): Location of a given pin along the x-axis.
+        y (float): Location of a given pin along the y-axis.
+
+    Returns:
+        bool: Whether the pin in question is within the given radius of the HEDGEHOG base centre.
     """
 
     x /= 10
@@ -36,6 +53,7 @@ def circCheck(rad, d_across_pinbase, x, y):
 
 def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
           tolerance, usrWeights, rad, zsep, pinData=None):
+    """Main function for construction of the HEDGEHOG in GDML format."""
 
     if not filename:
         filename = sys.argv[1]
@@ -155,13 +173,16 @@ def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
                                                       baseThickness)*10],
                                    b2_l, f"cone_p-{i}-{j}", hb1_l, reg)
 
-                print(f"{np.round(count * 100 / no_pins, 1)}"
-                      f"% complete, pin at x: {x/10}, y: {y/10}")
+                # print(f"{np.round(count * 100 / no_pins, 1)}"
+                #       f"% complete, pin at x: {x/10}, y: {y/10}")
+                print('\r    \r', end='', flush=True)
+                print(f"{np.round(count * 100 / no_pins, 1)}%", end='', flush=True)
 
+    print('\r    \r', end='', flush=True)
     print('100% complete')
     print("writing...")
     writer = pyg4ometry.gdml.Writer()
-    # this is how pyg4ometry does writing to a file...
+    # write to file
     writer.addDetector(reg)
     writer.write(f"{filename}.gdml")
     print("done")
