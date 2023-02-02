@@ -52,7 +52,7 @@ def circCheck(rad, d_across_pinbase, x, y):
 
 
 def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
-          tolerance, usrWeights, rad, zsep, pinData=None):
+          tolerance, usrWeights, rad, zsep, radius_cutoff, pinData=None):
     """Main function for construction of the HEDGEHOG in GDML format."""
 
     if not filename:
@@ -62,7 +62,9 @@ def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
 
     if not pinData:
         pinData = optimizer(SOBPeak, undersim, d_across_pinbase, tolerance,
-                            usrWeights, filename=filename, show=1)
+                            usrWeights, radius_cutoff, filename=filename, show=1)
+
+    print(f"creating pins... 0%", end='', flush=True)
 
     radii = pinData["radii"]
     thicknesses = pinData["thicknesses"]
@@ -176,11 +178,11 @@ def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
                 # print(f"{np.round(count * 100 / no_pins, 1)}"
                 #       f"% complete, pin at x: {x/10}, y: {y/10}")
                 print('\r    \r', end='', flush=True)
-                print(f"{np.round(count * 100 / no_pins, 1)}%", end='', flush=True)
+                print(f"creating pins... {np.round(count * 100 / no_pins, 1)}%", end='', flush=True)
 
     print('\r    \r', end='', flush=True)
     print('100% complete')
-    print("writing...")
+    print("writing...", end='', flush=True)
     writer = pyg4ometry.gdml.Writer()
     # write to file
     writer.addDetector(reg)
