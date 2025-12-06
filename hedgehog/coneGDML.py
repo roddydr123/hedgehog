@@ -1,7 +1,7 @@
 import pyg4ometry
 import numpy as np
 import sys
-from cubic import optimizer
+from hedgehog.cubic import optimizer
 
 
 def getPinLocs(d_across_pinbase, baseEdges):
@@ -62,7 +62,7 @@ def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
 
     if not pinData:
         pinData = optimizer(SOBPeak, undersim, d_across_pinbase, tolerance,
-                            usrWeights, radius_cutoff, filename=filename, show=1)
+                            usrWeights, radius_cutoff, filename=filename, show=0)
 
     print(f"creating pins... 0%", end='', flush=True)
 

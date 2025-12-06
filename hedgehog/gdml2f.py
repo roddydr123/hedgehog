@@ -11,7 +11,8 @@ def convert(template, filename=None):
     print("opening file for conversion to FLUKA input...")
 
     reader = pyg4ometry.gdml.Reader(f"{filename}.gdml")
-    world = reader.getRegistry().getWorldVolume()
+    greg = reader.getRegistry()
+    world = greg.getWorldVolume()
 
     # there's two hedgehog bases in the GDML file because fluka cant deal
     # with the way the pyg4ometry converter handles trapezoids, so one base
@@ -22,7 +23,7 @@ def convert(template, filename=None):
 
     # do the conversion to fluka geometry
     print("converting...")
-    freg = pyg4ometry.convert.geant4Logical2Fluka(world)
+    freg = pyg4ometry.convert.geant4Reg2FlukaReg(greg)
 
     # remove water and black hole and correctly assign materials
     # by transferring required bodies/regions to newfreg
