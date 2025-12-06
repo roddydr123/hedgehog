@@ -33,9 +33,6 @@ def test_it_runs(tmp_path):
     # convert the GDML file into an STL file for 3D printing.
     h.gdml2stl()
 
-    # assert pathlib.Path("/home/david/Documents/programming/hedgehog_refactor/hedgehog/hedgehog/data/test_output.inp").exists()
-    # # assert pathlib.Path("/home/david/Documents/programming/hedgehog_refactor/hedgehog/hedgehog/data/test_output.npz").exists()
-    # assert pathlib.Path("/home/david/Documents/programming/hedgehog_refactor/hedgehog/hedgehog/data/test_output.stl").exists()
-    # assert pathlib.Path("/home/david/Documents/programming/hedgehog_refactor/hedgehog/hedgehog/data/test_output.gdml").exists()
-
+    assert tmp_path.joinpath("test_output.gdml").exists()
+    assert tmp_path.joinpath("test_output.inp").exists()
     assert tmp_path.joinpath("test_output.stl").exists()
