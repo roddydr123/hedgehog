@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hedgehog"
+version = "0.1.0"
+description = "A package for generating and converting hedgehog proton beam geometries."
+authors = [
+    { name = "David Roddy", email = "davidroddy321@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.9.2"
+
+# Runtime dependencies for your project
+dependencies = [
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "pyg4ometry",
+]
+
+# Optional: entry points (CLI scripts)
+# [project.scripts]
+# hedgehog = "hedgehog.cli:main"
+
+# [tool.setuptools]
+# packages = ["hedgehog"]   # or use package discovery below
+
+# Recommended: automatic package discovery
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hedgehog*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v -ra -q"
