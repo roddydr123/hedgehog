@@ -18,6 +18,7 @@ dependencies = [
     "scipy",
     "matplotlib",
     "pyg4ometry",
+    "trimesh",
 ]
 
 # Optional: entry points (CLI scripts)
