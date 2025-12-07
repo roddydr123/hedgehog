@@ -36,3 +36,15 @@ def test_it_runs(tmp_path):
     assert tmp_path.joinpath("test_output.gdml").exists()
     assert tmp_path.joinpath("test_output.inp").exists()
     assert tmp_path.joinpath("test_output.stl").exists()
+
+    util_test_files_identical_line_by_line(tmp_path.joinpath("test_output.gdml"), RUN_PATH.parent / "test_data" / "test_output.gdml")
+    util_test_files_identical_line_by_line(tmp_path.joinpath("test_output.inp"), RUN_PATH.parent / "test_data" / "test_output.inp")
+
+
+def util_test_files_identical_line_by_line(filea, fileb):
+    with open(filea, "r") as a, open(fileb, "r") as b:
+        for line_num, (la, lb) in enumerate(zip(a, b), start=1):
+            assert la == lb, f"Mismatch on line {line_num}"
+
+        # Check that neither file has extra lines
+        assert list(a) == list(b) == []
