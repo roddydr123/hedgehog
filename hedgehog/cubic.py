@@ -8,13 +8,13 @@ from hedgehog.SOBPwidth import getwidth
 import re
 
 
-def logger(data, first=False):
-    if first is True:
-        with open("optimiser.log", "w") as file:
-            file.write(f"{data}\n")
-    else:
-        with open("optimiser.log", "a") as file:
-            file.write(f"{data}\n")
+# def logger(data, first=False):
+#     if first is True:
+#         with open("optimiser.log", "w") as file:
+#             file.write(f"{data}\n")
+#     else:
+#         with open("optimiser.log", "a") as file:
+#             file.write(f"{data}\n")
 
 
 def atoi(text):
@@ -234,7 +234,7 @@ def objectiveFunc(weights, thicknesses, desired, sDDict, d_across_pinbase,
     scalar = (optWeights[0] * target_stdev) + (optWeights[1] * ent_sum) +\
              (optWeights[2] * exit_sum)
 
-    logger(f"{scalar}  {np.round((target_stdev * 100) / np.average(target_dose),3)}")
+    # logger(f"{scalar}  {np.round((target_stdev * 100) / np.average(target_dose),3)}")
     print('\r    \r', end='', flush=True)
     print(f"minimising... {np.round(scalar, 3)}", end='', flush=True)
 
@@ -267,8 +267,8 @@ def optimizer(SOBPeak, undersim, d_across_pinbase, tolerance, usrWeights, radius
     res = opt.minimize(objectiveFunc, x0, args=args, bounds=bounds,
                        method="SLSQP", tol=tolerance, options=options)
     print(f"\n\n{res.message}\n\n")
-    logger("\n\nEND OF OPTIMIZATION\n")
-    logger(res)
+    # logger("\n\nEND OF OPTIMIZATION\n")
+    # logger(res)
     opt_weights = res.x
     depth_dose_sobp, pinData = genSOBP(init_thicknesses, opt_weights, sDDict,
                                        d_across_pinbase, radius_cutoff, show=show,

@@ -34,4 +34,4 @@ include = ["hedgehog*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-v -ra -q"
+addopts = ["-v", "-ra"]
