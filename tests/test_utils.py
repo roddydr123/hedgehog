@@ -1,5 +1,6 @@
 import numpy as np
 import trimesh
+import re
 
 
 def stl_same_geometry(path_a: str, path_b: str, tol: float = 1e-6) -> bool:
@@ -46,3 +47,27 @@ def util_test_files_identical_line_by_line(filea, fileb):
 
         # Check that neither file has extra lines
         assert list(a) == list(b) == []
+
+
+def files_equal_to_3dp(file1, file2, ndp=3):
+    """
+    Compare two text files, treating all floating-point numbers
+    as equal if they match when rounded to ndp decimal places.
+    Returns True if equal, False otherwise.
+    """
+
+    float_re = re.compile(r"-?\d+\.\d+")
+
+    def normalize(text):
+        return float_re.sub(
+            lambda m: f"{float(m.group()):.{ndp}f}",
+            text
+        )
+
+    with open(file1, "r") as f:
+        text1 = normalize(f.read())
+
+    with open(file2, "r") as f:
+        text2 = normalize(f.read())
+
+    return text1 == text2
