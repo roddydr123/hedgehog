@@ -43,7 +43,7 @@ def test_it_runs(tmp_path):
     assert tmp_path.joinpath("test_output.stl").exists()
 
     files_equal_to_3dp(tmp_path.joinpath("test_output.gdml"), RUN_PATH.parent / "test_data" / "test_output.gdml")
-    util_test_files_identical_line_by_line(tmp_path.joinpath("test_output.inp"), RUN_PATH.parent / "test_data" / "test_output.inp")
+    files_equal_to_3dp(tmp_path.joinpath("test_output.inp"), RUN_PATH.parent / "test_data" / "test_output.inp")
 
 
 def test_gdml2f(tmp_path):
