@@ -3,7 +3,7 @@ from hedgehog.cubic import optimizer
 import pathlib
 import shutil
 import pickle
-from tests.test_utils import util_test_files_identical_line_by_line, stl_same_geometry, files_equal_to_3dp
+from tests.test_utils import util_test_files_identical_line_by_line, stl_same_geometry, files_equal_to_ndp
 import numpy as np
 
 
@@ -42,8 +42,8 @@ def test_it_runs(tmp_path):
     assert tmp_path.joinpath("test_output.inp").exists()
     assert tmp_path.joinpath("test_output.stl").exists()
 
-    files_equal_to_3dp(tmp_path.joinpath("test_output.gdml"), RUN_PATH.parent / "test_data" / "test_output.gdml")
-    files_equal_to_3dp(tmp_path.joinpath("test_output.inp"), RUN_PATH.parent / "test_data" / "test_output.inp")
+    files_equal_to_ndp(tmp_path.joinpath("test_output.gdml"), RUN_PATH.parent / "test_data" / "test_output.gdml")
+    files_equal_to_ndp(tmp_path.joinpath("test_output.inp"), RUN_PATH.parent / "test_data" / "test_output.inp")
 
 
 def test_gdml2f(tmp_path):

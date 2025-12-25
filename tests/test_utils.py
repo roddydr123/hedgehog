@@ -49,7 +49,7 @@ def util_test_files_identical_line_by_line(filea, fileb):
         assert list(a) == list(b) == []
 
 
-def files_equal_to_3dp(file1, file2, ndp=3):
+def files_equal_to_ndp(file1, file2, ndp=3):
     """
     Compare two text files, treating all floating-point numbers
     as equal if they match when rounded to ndp decimal places.

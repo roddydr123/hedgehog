@@ -48,3 +48,18 @@ h.gdml2stl()
 ## Code theory
 
 <img src="docs/flow2.png" alt="flowchart showing how the code works" width="400">
+
+## Testing
+
+So far there are only some regression tests in `tests/initial_tests.py`:
+
+    - `test_it_runs` runs the whole HEDGEHOG creation pipeline and checks the output files exist.
+    - `test_gdml2f` runs the conversion of GDML geometry to FLUKA geometry and compares the output to a baseline expected result.
+    - `test_gdml2stl` runs the conversion of GDML geometry to STL and compares the output to a baseline expected result.
+    - `test_optimizer` runs the creation of the HEDGEHOG shape and compares the output to a baseline expected result.
+
+`tests/test_utils.py` contains several functions used for checking outputs of various formats:
+
+    - `stl_same_geometry` checks if two .stl files contain the same geometry.
+    - `files_equal_to_ndp` checks if text files are equal with all numbers rounded to a given precision (as the same optimization run on different machines will give different results at high precision).
+    - `util_test_files_identical_line_by_line` checks it two text files are exactly equal. Runs line by line to give more useful error messages.
