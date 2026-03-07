@@ -1,0 +1,61 @@
+repos:
+  # Black formatter
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+        args: ["--line-length=120"]
+
+  # isort for import sorting (synced with VS Code args)
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: [
+          "--profile", "black",
+          "--line-length", "120",
+          "--py", "39",
+          "--atomic",
+          "--trailing-comma",
+          "--multi-line", "3",
+          "--lines-after-imports", "2",
+          "--force-alphabetical-sort-within-sections"
+        ]
+
+  # flake8 linting
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.1.0
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-bugbear        # catches common Python bugs
+          - flake8-comprehensions # checks list/dict/set comprehensions
+          - flake8-pyproject      # allow config in pyproject.toml
+        args: [
+          "--max-line-length=120",
+          "--extend-ignore=E203,W503"   # compatible with Black
+        ]
+
+  # mypy type checker
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.11.2
+    hooks:
+      - id: mypy
+        additional_dependencies: [
+          types-requests,   # example: add stubs for requests
+          types-python-dateutil
+        ]
+        args: [
+          "--ignore-missing-imports",
+          "--disallow-untyped-defs",
+          "--pretty"
+        ]
+
+  # Pre-commit hygiene hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-added-large-files
