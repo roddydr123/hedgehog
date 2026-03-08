@@ -1,9 +1,11 @@
-import pyg4ometry
+import pathlib
 import sys
+
+import pyg4ometry
 import vtk as _vtk
 
 
-def writeVtkPolyDataAsSTLFile(fileName, meshes):
+def writeVtkPolyDataAsSTLFile(fileName: str, meshes: list) -> _vtk.vtkSTLWriter:
     """
     Pyg4ometry function to write an STL file from poly data.
     """
@@ -28,7 +30,7 @@ def writeVtkPolyDataAsSTLFile(fileName, meshes):
     return stlWriter
 
 
-def convert(filename=None):
+def convert(filename: str | pathlib.Path | None = None) -> None:
     """
     Converts a geometry from GDML format to STL format.
     """
@@ -37,7 +39,7 @@ def convert(filename=None):
         filename = sys.argv[1]
 
     print("reading...")
-    r = pyg4ometry.gdml.Reader(f'{filename}.gdml')
+    r = pyg4ometry.gdml.Reader(f"{filename}.gdml")
     reg = r.getRegistry()
 
     meshes = []
@@ -49,7 +51,7 @@ def convert(filename=None):
     for kv, kp in dualDict:
         # don't include the world volume and the water phantom in the
         # hedgehog geometry (and the box base for FLUKA).
-        forbidden_lvs = ['wl', 'hb1_l', 'nb1_l']
+        forbidden_lvs = ["wl", "hb1_l", "nb1_l"]
         if kv not in forbidden_lvs:
             lv = reg.logicalVolumeDict[kv]
             pv = reg.physicalVolumeDict[kp]
@@ -65,23 +67,22 @@ def convert(filename=None):
             if pv.scale:
                 s = pv.scale.eval()
                 mesh.scale(s)
-                if s[0]*s[1]*s[2] == 1:
+                if s[0] * s[1] * s[2] == 1:
                     pass
-                elif s[0]*s[1]*s[2] == -1:
+                elif s[0] * s[1] * s[2] == -1:
                     mesh = mesh.inverse()
 
             # translate the pin mesh to the right place
             t = pv.position.eval()
             mesh.translate(t)
 
-            vtkPD = pyg4ometry.visualisation.Convert.\
-                pycsgMeshToVtkPolyData(mesh)
+            vtkPD = pyg4ometry.visualisation.Convert.pycsgMeshToVtkPolyData(mesh)
 
             # make a list of meshes to be written up in one go.
             meshes.append(vtkPD)
 
     print("writing...")
-    writeVtkPolyDataAsSTLFile(f'{filename}.stl', meshes)
+    writeVtkPolyDataAsSTLFile(f"{filename}.stl", meshes)
 
 
 if __name__ == "__main__":

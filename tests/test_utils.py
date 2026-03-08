@@ -1,9 +1,11 @@
-import numpy as np
-import trimesh
+import pathlib
 import re
 
+import numpy as np
+import trimesh
 
-def stl_same_geometry(path_a: str, path_b: str, tol: float = 1e-6) -> bool:
+
+def stl_same_geometry(path_a: str | pathlib.Path, path_b: str | pathlib.Path, tol: float = 1e-6) -> bool:
     """
     Returns True if two STL files contain the same geometry, ignoring
     triangle ordering and floating-point noise.
@@ -24,7 +26,7 @@ def stl_same_geometry(path_a: str, path_b: str, tol: float = 1e-6) -> bool:
     if tris_a.shape[0] != tris_b.shape[0]:
         return False
 
-    def normalize(triangles):
+    def normalize(triangles: np.ndarray) -> np.ndarray:
         # sort vertices within each triangle
         sorted_verts = np.sort(triangles, axis=1)
 
@@ -40,7 +42,7 @@ def stl_same_geometry(path_a: str, path_b: str, tol: float = 1e-6) -> bool:
     return set(map(tuple, fa)) == set(map(tuple, fb))
 
 
-def util_test_files_identical_line_by_line(filea, fileb):
+def util_test_files_identical_line_by_line(filea: str | pathlib.Path, fileb: str | pathlib.Path) -> None:
     with open(filea, "r") as a, open(fileb, "r") as b:
         for line_num, (la, lb) in enumerate(zip(a, b), start=1):
             assert la == lb, f"Mismatch on line {line_num}"
@@ -49,7 +51,7 @@ def util_test_files_identical_line_by_line(filea, fileb):
         assert list(a) == list(b) == []
 
 
-def files_equal_to_ndp(file1, file2, ndp=3):
+def files_equal_to_ndp(file1: str | pathlib.Path, file2: str | pathlib.Path, ndp: int = 3) -> bool:
     """
     Compare two text files, treating all floating-point numbers
     as equal if they match when rounded to ndp decimal places.
@@ -58,11 +60,8 @@ def files_equal_to_ndp(file1, file2, ndp=3):
 
     float_re = re.compile(r"-?\d+\.\d+")
 
-    def normalize(text):
-        return float_re.sub(
-            lambda m: f"{float(m.group()):.{ndp}f}",
-            text
-        )
+    def normalize(text: str) -> str:
+        return float_re.sub(lambda m: f"{float(m.group()):.{ndp}f}", text)
 
     with open(file1, "r") as f:
         text1 = normalize(f.read())

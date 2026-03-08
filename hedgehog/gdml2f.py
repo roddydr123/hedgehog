@@ -1,10 +1,18 @@
-import pyg4ometry
-import sys
-import re
 import os
+import pathlib
+import re
+import sys
+
+import pyg4ometry
 
 
-def convert(template, filename=None):
+def convert(template: str | pathlib.Path, filename: str | pathlib.Path | None = None) -> None:
+    """
+    Converts a geometry from GDML format to FLUKA input format, merging it with a template file.
+    Args:
+        template (str | pathlib.Path): Path to the template file.
+        filename (str | pathlib.Path | None): Path to the GDML file. If None, uses the first command-line argument.
+    """
 
     if not filename:
         filename = sys.argv[1]
@@ -52,7 +60,7 @@ def convert(template, filename=None):
     print("complete!")
 
 
-def checkRegion(key):
+def checkRegion(key: str) -> int:
     if key == "R0000":
         return 0
     elif key == "BLKHOLE":
@@ -63,7 +71,7 @@ def checkRegion(key):
         return 400
 
 
-def addToTemplate(filename, template_path):
+def addToTemplate(filename: str | pathlib.Path, template_path: str | pathlib.Path) -> None:
 
     # template file
     template = open(template_path, "r")
@@ -86,28 +94,24 @@ def addToTemplate(filename, template_path):
             if "END" in geolines[i]:
                 indices.append(i)
 
-        geomsplit = geolines[2:indices[0]]
-        regsplit = geolines[indices[0]:indices[1]]
-        assignROT = geolines[indices[2]+1:]
+        geomsplit = geolines[2 : indices[0]]
+        regsplit = geolines[indices[0] : indices[1]]
+        assignROT = geolines[indices[2] + 1 :]
 
         # fix the parentheses problem
         geostring = "".join(regsplit)
-        pp = re.compile('-\((\n* +)\+(B\w+\n*)( +-B\w+)\)')
-        qq = re.compile('-\((\n* +)\+(B\w+)\)')
+        pp = re.compile(r"-\((\n* +)\+(B\w+\n*)( +-B\w+)\)")
+        qq = re.compile(r"-\((\n* +)\+(B\w+)\)")
 
-        new = re.sub(pp, '\\1-\\2\\3', geostring)
-        regsplit = re.sub(qq, '\\1-\\2', new)
+        new = re.sub(pp, "\\1-\\2\\3", geostring)
+        match_regsplit = re.sub(qq, "\\1-\\2", new)
 
         file.writelines(templines[:geoindex])
         file.writelines(geomsplit)
-        file.writelines(regsplit)
+        file.writelines(match_regsplit)
         file.writelines(templines[geoindex:elseindex])
         file.writelines(assignROT)
         file.writelines(templines[elseindex:])
 
         template.close()
         geometryfile.close()
-
-
-if __name__ == "__main__":
-    convert()

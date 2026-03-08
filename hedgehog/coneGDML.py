@@ -1,10 +1,14 @@
-import pyg4ometry
-import numpy as np
+import pathlib
 import sys
+
+import numpy as np
+import pyg4ometry
+
 from hedgehog.cubic import optimizer
+from hedgehog.static_classes import SOBPeak_cls, Undersim
 
 
-def getPinLocs(d_across_pinbase, baseEdges):
+def getPinLocs(d_across_pinbase: float, baseEdges: float) -> tuple[np.ndarray, np.ndarray]:
     """Finds locations to place pins which will tile the HEDGEHOG base surface.
 
     Args:
@@ -16,17 +20,17 @@ def getPinLocs(d_across_pinbase, baseEdges):
     """
     q = 3 * d_across_pinbase / np.sqrt(3)
 
-    start = (baseEdges * -1/2) + d_across_pinbase/2
-    stop = baseEdges/2 - d_across_pinbase/2
+    start = (baseEdges * -1 / 2) + d_across_pinbase / 2
+    stop = baseEdges / 2 - d_across_pinbase / 2
 
     # create the arrays based on hexagonal pinbases
-    pinLocArrX = (np.arange(start, stop, q/2))
-    pinLocArrY = (np.arange(start, stop, d_across_pinbase))
+    pinLocArrX = np.arange(start, stop, q / 2)
+    pinLocArrY = np.arange(start, stop, d_across_pinbase)
 
     return pinLocArrX, pinLocArrY
 
 
-def circCheck(rad, d_across_pinbase, x, y):
+def circCheck(rad: float, d_across_pinbase: float, x: float, y: float) -> bool:
     """Determines if a given pin is entirely within a circle of radius
     rad before allowing it to be printed.
 
@@ -43,7 +47,7 @@ def circCheck(rad, d_across_pinbase, x, y):
     x /= 10
     y /= 10
     pinrad = d_across_pinbase / 2
-    tolerance = 1E-2
+    tolerance = 1e-2
 
     r = np.sqrt(x**2 + y**2)
     if (r + pinrad) > (rad + tolerance):
@@ -51,8 +55,19 @@ def circCheck(rad, d_across_pinbase, x, y):
     return True
 
 
-def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
-          tolerance, usrWeights, rad, zsep, radius_cutoff, pinData=None):
+def build(
+    d_across_pinbase: float,
+    baseEdges: float,
+    filename: str | pathlib.Path | None,
+    SOBPeak: SOBPeak_cls,
+    undersim: Undersim,
+    tolerance: float,
+    usrWeights: list[float] | tuple[float, float, float],
+    rad: float,
+    zsep: float,
+    radius_cutoff: float,
+    pinData: dict | None = None,
+) -> None:
     """Main function for construction of the HEDGEHOG in GDML format."""
 
     if not filename:
@@ -61,10 +76,11 @@ def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
     reg = pyg4ometry.geant4.Registry()
 
     if not pinData:
-        pinData = optimizer(SOBPeak, undersim, d_across_pinbase, tolerance,
-                            usrWeights, radius_cutoff, filename=filename, show=0)
+        pinData = optimizer(
+            SOBPeak, undersim, d_across_pinbase, tolerance, usrWeights, radius_cutoff, filename=filename, show=False
+        )
 
-    print(f"creating pins... 0%", end='', flush=True)
+    print("creating pins... 0%", end="", flush=True)
 
     radii = pinData["radii"]
     thicknesses = pinData["thicknesses"]
@@ -92,48 +108,50 @@ def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
     # move everything to the correct z location
     new_zero = zsep
 
-    hb1 = pyg4ometry.geant4.solid.Box("hb1", 9, 9,
-                                      hbox_thick, reg, lunit="cm")
-    hb1_l = pyg4ometry.geant4.LogicalVolume(hb1, "G4_AIR", "hb1_l", reg,
-                                            lunit="cm")
-    pyg4ometry.geant4.\
-        PhysicalVolume([0, 0, 0],
-                       [0, 0, (new_zero + (hbox_thick/2))*10],
-                       hb1_l, "hb1_p", wl, reg)
+    hb1 = pyg4ometry.geant4.solid.Box("hb1", 9, 9, hbox_thick, reg, lunit="cm")
+    hb1_l = pyg4ometry.geant4.LogicalVolume(hb1, "G4_AIR", "hb1_l", reg, lunit="cm")
+    pyg4ometry.geant4.PhysicalVolume([0, 0, 0], [0, 0, (new_zero + (hbox_thick / 2)) * 10], hb1_l, "hb1_p", wl, reg)
 
     # extra base area for attaching to mount (cm), currently 1cm
     extra = 1
 
-    shortCoord = (baseEdges/2 - baseThickness)
-    longCoord = (baseEdges/2)
+    shortCoord = baseEdges / 2 - baseThickness
+    longCoord = baseEdges / 2
 
     # create the base object with planes for STL conversion
-    b1 = pyg4ometry.geant4.solid.GenericTrap("b1", shortCoord, longCoord,
-                                             shortCoord, -longCoord,
-                                             -longCoord - extra, -longCoord,
-                                             -longCoord - extra, longCoord,
-                                             longCoord, longCoord,
-                                             longCoord, -longCoord,
-                                             -longCoord - extra, -longCoord,
-                                             -longCoord - extra, longCoord,
-                                             baseThickness/2, reg,
-                                             lunit="cm")
-    b1_l = pyg4ometry.geant4.LogicalVolume(b1, "G4_Fe", "b1_l", reg,
-                                           lunit="cm")
-    pyg4ometry.geant4.PhysicalVolume([0, 0, 0],
-                                     [0, 0, (baseThickness/2 -
-                                             hbox_thick/2)*10],
-                                     b1_l, "b1_p", hb1_l, reg)
+    b1 = pyg4ometry.geant4.solid.GenericTrap(
+        "b1",
+        shortCoord,
+        longCoord,
+        shortCoord,
+        -longCoord,
+        -longCoord - extra,
+        -longCoord,
+        -longCoord - extra,
+        longCoord,
+        longCoord,
+        longCoord,
+        longCoord,
+        -longCoord,
+        -longCoord - extra,
+        -longCoord,
+        -longCoord - extra,
+        longCoord,
+        baseThickness / 2,
+        reg,
+        lunit="cm",
+    )
+    b1_l = pyg4ometry.geant4.LogicalVolume(b1, "G4_Fe", "b1_l", reg, lunit="cm")
+    pyg4ometry.geant4.PhysicalVolume(
+        [0, 0, 0], [0, 0, (baseThickness / 2 - hbox_thick / 2) * 10], b1_l, "b1_p", hb1_l, reg
+    )
 
     # base with no planes for FLUKA
-    nb1 = pyg4ometry.geant4.solid.Box("nb1", baseEdges, baseEdges,
-                                      baseThickness, reg, lunit="cm")
-    nb1_l = pyg4ometry.geant4.LogicalVolume(nb1, "G4_Fe", "nb1_l", reg,
-                                            lunit="cm")
-    pyg4ometry.geant4.PhysicalVolume([0, 0, 0],
-                                     [0, 0, (baseThickness/2 -
-                                             hbox_thick/2)*10],
-                                     nb1_l, "nb1_p", hb1_l, reg)
+    nb1 = pyg4ometry.geant4.solid.Box("nb1", baseEdges, baseEdges, baseThickness, reg, lunit="cm")
+    nb1_l = pyg4ometry.geant4.LogicalVolume(nb1, "G4_Fe", "nb1_l", reg, lunit="cm")
+    pyg4ometry.geant4.PhysicalVolume(
+        [0, 0, 0], [0, 0, (baseThickness / 2 - hbox_thick / 2) * 10], nb1_l, "nb1_p", hb1_l, reg
+    )
 
     # fetch the pin locations
     pinLocArrX, pinLocArrY = getPinLocs(d_across_pinbase, baseEdges)
@@ -163,29 +181,32 @@ def build(d_across_pinbase, baseEdges, filename, SOBPeak, undersim,
 
             if circCheck(rad, d_across_pinbase, x, y):
 
-                b2 = pyg4ometry.geant4.\
-                    solid.Polycone(f"cone_s-{i}-{j}", 0, 2 * np.pi,
-                                   thicknesses, np.zeros_like(pinData["radii"]),
-                                   radii, reg, lunit="cm")
-                b2_l = pyg4ometry.geant4.\
-                    LogicalVolume(b2, "G4_Fe", f"cone_l-{i}-{j}", reg,
-                                  lunit="cm")
-                pyg4ometry.geant4.\
-                    PhysicalVolume([0, 0, 0], [x, y, (- hbox_thick/2 +
-                                                      baseThickness)*10],
-                                   b2_l, f"cone_p-{i}-{j}", hb1_l, reg)
+                b2 = pyg4ometry.geant4.solid.Polycone(
+                    f"cone_s-{i}-{j}",
+                    0,
+                    2 * np.pi,
+                    thicknesses,
+                    np.zeros_like(pinData["radii"]),
+                    radii,
+                    reg,
+                    lunit="cm",
+                )
+                b2_l = pyg4ometry.geant4.LogicalVolume(b2, "G4_Fe", f"cone_l-{i}-{j}", reg, lunit="cm")
+                pyg4ometry.geant4.PhysicalVolume(
+                    [0, 0, 0], [x, y, (-hbox_thick / 2 + baseThickness) * 10], b2_l, f"cone_p-{i}-{j}", hb1_l, reg
+                )
 
                 # print(f"{np.round(count * 100 / no_pins, 1)}"
                 #       f"% complete, pin at x: {x/10}, y: {y/10}")
-                print('\r    \r', end='', flush=True)
-                print(f"creating pins... {np.round(count * 100 / no_pins, 1)}%", end='', flush=True)
+                print("\r    \r", end="", flush=True)
+                print(f"creating pins... {np.round(count * 100 / no_pins, 1)}%", end="", flush=True)
 
-    print('\r    \r', end='', flush=True)
-    print('100% complete')
-    print("writing...", end='', flush=True)
+    print("\r    \r", end="", flush=True)
+    print("100% complete")
+    print("writing...", end="", flush=True)
     writer = pyg4ometry.gdml.Writer()
     # write to file
     writer.addDetector(reg)
     writer.write(f"{filename}.gdml")
-    print('\r    \r', end='', flush=True)
+    print("\r    \r", end="", flush=True)
     print("writing... done")
