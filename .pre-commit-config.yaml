@@ -58,4 +58,5 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
+        exclude: \.inp$ # don't do this on .inp files
       - id: check-added-large-files
