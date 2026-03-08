@@ -4,7 +4,7 @@ GLOBAL         1000.       0.0       0.0       0.0        1.
 DEFAULTS                                                              PRECISIO
 RANDOMIZ          1.717994272.
 GEOBEGIN                                                              COMBNAME
-    0    0
+    0    0          
 * bSlab2
 RPP bSlab2     -13.500000 -12.200000 -15.250000 15.250000 22. 36.
 * bSlab2Ho
@@ -563,13 +563,13 @@ rAirInCh     5 +bairioch -bionfron -bionback -bgrov1 -bgrov2 -bionma -rkapton8 -
 * Reg # 10
 * rOutAir; assigned material: AIR; mat # (33)
 rOutAir      5 +ioncsbx +bioninse
-               | +inair -bFloor -bairtbl -bairpm -bairbeam -bAirSlab -baircol1 -baircol2 -bairioch -rionch1
-               -rngshift -bcyn1 -ioncsbx -rionch4 -bXray -bCuSlab -bIrColPl -bIrColD -bSRAM1 -bSRAM2 -bSRAM3
-               -bSRAM4 -bSRAM5 -bSRAM6 -bSRAM7 -bSRAM8 -bSRAM9 -bSRAM10 -bSRAM11 -bSRAM12 -bSRAM13 -bSRAM14
-               -bSRAM15 -bSRAM16 -bSRAM17 -bSRAM18 -bSRAM19 -bSRAM20 -bSRAM21 -bSRAM22 -bSRAM23 -bSRAM24 -bSRAM25
-               -bSRAM26 -bSRAM27 -bSRAM28 -bSRAM29 -bSRAM30 -bSRAM31 -bSRAM32 -bSRAM33 -bSRAM34 -bSRAM35 -bSRAM36
-               -bSRAM37 -bSRAM38 -bSRAM39 -bSRAM40 -bSRAM41 -bSRAM42 -bSRAM43 -bSRAM44 -bSRAM45 -bSRAM46 -bSRAM47
-               -bSRAM48 -bSRAM49 -bSRAM50 -bSRAM51 -bSRAM52 -bSRAM53 -bSRAM54 -bSRAM55 -bSRAM56 -bSRAM57 -bSRAM58
+               | +inair -bFloor -bairtbl -bairpm -bairbeam -bAirSlab -baircol1 -baircol2 -bairioch -rionch1 
+               -rngshift -bcyn1 -ioncsbx -rionch4 -bXray -bCuSlab -bIrColPl -bIrColD -bSRAM1 -bSRAM2 -bSRAM3 
+               -bSRAM4 -bSRAM5 -bSRAM6 -bSRAM7 -bSRAM8 -bSRAM9 -bSRAM10 -bSRAM11 -bSRAM12 -bSRAM13 -bSRAM14 
+               -bSRAM15 -bSRAM16 -bSRAM17 -bSRAM18 -bSRAM19 -bSRAM20 -bSRAM21 -bSRAM22 -bSRAM23 -bSRAM24 -bSRAM25 
+               -bSRAM26 -bSRAM27 -bSRAM28 -bSRAM29 -bSRAM30 -bSRAM31 -bSRAM32 -bSRAM33 -bSRAM34 -bSRAM35 -bSRAM36 
+               -bSRAM37 -bSRAM38 -bSRAM39 -bSRAM40 -bSRAM41 -bSRAM42 -bSRAM43 -bSRAM44 -bSRAM45 -bSRAM46 -bSRAM47 
+               -bSRAM48 -bSRAM49 -bSRAM50 -bSRAM51 -bSRAM52 -bSRAM53 -bSRAM54 -bSRAM55 -bSRAM56 -bSRAM57 -bSRAM58 
                -bSRAM59 -bSRAM60 -bBrIrCoD -bBrIrCoI -bwaterbx -B000201
                | +rngHole +rngshift
 * Reg # 11
